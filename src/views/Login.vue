@@ -4,11 +4,11 @@
       <el-input v-model="userInfo.nickName" />
     </el-form-item>
     <el-form-item prop="password" label="密码" :rules="passwordRule">
-      <el-input v-model="userInfo.password" />
+      <el-input v-model="userInfo.password"  type = "password" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(userInfo)">登录</el-button>
-      <el-button @click="resetForm(formRef)">注册</el-button>
+      <el-button @click="toSignUp()">注册</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -24,7 +24,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { loginReq } from '../axios/axios';
-import type { FormInstance } from 'element-plus'
 
 const passwordRule = {
   required: true,
@@ -44,7 +43,6 @@ const nickNameRule = [
   },
 ]
 
-const formRef = ref<FormInstance>()
 const userInfo = reactive<{
   password: string,
   nickName: string
@@ -53,17 +51,15 @@ const userInfo = reactive<{
   nickName: '',
 })
 
-
 const submitForm = (userInfo) => {
-  loginReq.login(userInfo.nickName,userInfo.password).then(resp=>{
-
-
+  loginReq.login(userInfo.nickName, userInfo.password).then(resp => {
+    console.log(resp)
   })
+}
+
+const toSignUp = () => {
+
 
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-}
 </script>

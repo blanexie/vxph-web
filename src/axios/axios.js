@@ -1,5 +1,5 @@
-const axios = require('axios').default;
-const crypto = require('crypto-js');
+import axios from 'axios'
+import crypto from 'crypto-js'
 
 // 添加请求拦截器
 axios.interceptors.request.use(function (config) {
@@ -24,8 +24,8 @@ axios.interceptors.response.use(function (response) {
 
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
-    timeout: 1000,
-    headers: { 'X-Custom-Header': 'foobar' }
+    timeout: 3000000,
+   // headers: { 'X-Custom-Header': 'foobar' }
 });
 
 const loginReq = {
@@ -33,7 +33,8 @@ const loginReq = {
     login: function (userName, password) {
         const timestamp = Date.now();
         const sign = crypto.SHA256(userName + "&" + password + "&" + timestamp)
-        return instance.get("/user/login?userName=" + userName + "&timestamp=" + timestamp + "&sign=" + sign)
+        console.log(sign);
+        return instance.get("/user/login?nickName=" + userName + "&timestamp=" + timestamp + "&sign=" + sign)
     }
 }
 
