@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card" shadow="always">
-    <el-form ref="formRef" :model="userInfo" label-width="4rem" >
+    <el-form ref="formRef" :model="userInfo" label-width="4rem">
       <el-form-item prop="text" label="用户名" :rules="nickNameRule">
         <el-input v-model="userInfo.nickName" />
       </el-form-item>
@@ -21,11 +21,15 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { loginReq } from '../axios/axios';
+import { userReq } from '../axios/axios';
+import Notification from '../common/notification'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const passwordRule = {
   required: true,
-  message: 'domain can not be null',
+  message: 'password can not be null',
   trigger: 'blur',
 }
 const nickNameRule = [
@@ -50,17 +54,17 @@ const userInfo = reactive<{
 })
 
 const submitForm = (userInfo) => {
-  loginReq.login(userInfo.nickName, userInfo.password).then(resp => {
+  userReq.login(userInfo.nickName, userInfo.password).then(resp => {
     const data = resp.data
     if (data.code != 200) {
-
+      Notification.error("登录失败", data.code + " ; " + data.error)
     }
     console.log(resp)
   })
 }
 
 const toSignUp = () => {
-
+  router.push("/signUp")
 
 }
 

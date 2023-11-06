@@ -1,14 +1,12 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
-
-
+ 
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
     timeout: 30000,
-   // headers: { 'X-Custom-Header': 'foobar' }
 });
 
-const loginReq = {
+const userReq = {
 
     login: function (userName, password) {
         const timestamp = Date.now();
@@ -18,4 +16,4 @@ const loginReq = {
     }
 }
 
-export { loginReq }
+export { userReq }
