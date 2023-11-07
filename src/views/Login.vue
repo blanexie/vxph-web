@@ -56,10 +56,15 @@ const userInfo = reactive<{
 const submitForm = (userInfo) => {
   userReq.login(userInfo.nickName, userInfo.password).then(resp => {
     const data = resp.data
+    console.log(resp)
     if (data.code != 200) {
       Notification.error("登录失败", data.code + " ; " + data.error)
+    }else{
+        sessionStorage.setItem("token", data.body.token)
+        sessionStorage.setItem("userInfo", data.body.userInfo)
+        sessionStorage.setItem("account", data.body.account)
+        router.push("/home")
     }
-    console.log(resp)
   })
 }
 
