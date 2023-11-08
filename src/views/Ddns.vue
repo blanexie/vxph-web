@@ -1,77 +1,63 @@
 <template>
-    <el-card class="box-card" shadow="always">
-        <el-form ref="formRef" :model="userInfo" label-width="4rem">
-            <el-form-item prop="text" label="用户名" :rules="nickNameRule">
-                <el-input v-model="userInfo.nickName" />
-            </el-form-item>
-            <el-form-item prop="password" label="密码" :rules="passwordRule">
-                <el-input v-model="userInfo.password" type="password" />
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm(userInfo)">登录</el-button>
-                <el-button @click="toSignUp()">注册</el-button>
-            </el-form-item>
-        </el-form></el-card>
+    <el-card class="box-card">
+        <template #header>
+            <div class="card-header">
+                <h2>阿里云动态解析记录</h2>
+                <br />
+                <div>当前服务端 <br />
+                    ipv4: 192.168.1.1 <br />
+                    ipv6 FC00:0000:130F:0000:0000:09C0:876A:130B </div>
+            </div>
+        </template>
+        <el-table :data="tableData" stripe="true" style="width: 100%" height="250">
+            <el-table-column fixed prop="recordId" label="recordId" width="150" />
+            <el-table-column prop="type" label="type" width="80" />
+            <el-table-column prop="rr" label="rr" width="120" />
+            <el-table-column prop="value" label="value" width="180" />
+            <el-table-column prop="domainName" label="domainName" width="180" />
+            <el-table-column prop="ttl" label="ttl" width="80" />
+            <el-table-column prop="remark" label="remark" width="120" />
+            <el-table-column prop="updateTime" label="updateTime" width="120" />
+            <el-table-column prop="createTime" label="createTime" width="120" />
+        </el-table>
+    </el-card>
 </template>
-<style scoped>
-.box-card {
-    padding: 2rem;
-    width: 480px;
-}
-</style>
+  
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
-import { userReq } from '../axios/axios';
-import Notification from '../common/notification'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-const passwordRule = {
-    required: true,
-    message: 'password can not be null',
-    trigger: 'blur',
-}
-const nickNameRule = [
+const tableData = [
     {
-        required: true,
-        message: 'Please input  nickName  ',
-        trigger: 'blur',
+        recordId: '2016-05-03',
+        type: 'Tom',
+        rr: 'California',
+        value: 'Los Angeles',
+        domainName: 'No. 189, Grove St, Los Angeles',
+        ttl: 'CA 90036',
+        remark: 'CA 90036',
+        updateTime: 'CA 90036',
+        createTime: 'CA 90036',
     },
     {
-        type: 'text',
-        message: 'Please input correct nickName',
-        trigger: ['blur', 'change'],
+        recordId: '2016-05-03',
+        type: 'Tom',
+        rr: 'California',
+        value: 'Los Angeles',
+        domainName: 'No. 189, Grove St, Los Angeles',
+        ttl: 'CA 90036',
+        remark: 'CA 90036',
+        updateTime: 'CA 90036',
+        createTime: 'CA 90036',
     },
+    {
+        recordId: '2016-05-03',
+        type: 'Tom',
+        rr: 'California',
+        value: 'Los Angeles',
+        domainName: 'No. 189, Grove St, Los Angeles',
+        ttl: 'CA 90036',
+        remark: 'CA 90036',
+        updateTime: 'CA 90036',
+        createTime: 'CA 90036',
+    }
 ]
-
-const userInfo = reactive<{
-    password: string,
-    nickName: string
-}>({
-    password: '',
-    nickName: '',
-})
-
-const submitForm = (userInfo) => {
-    userReq.login(userInfo.nickName, userInfo.password).then(resp => {
-        const data = resp.data
-        console.log(resp)
-        if (data.code != 200) {
-            Notification.error("登录失败", data.code + " ; " + data.error)
-        } else {
-            sessionStorage.setItem("token", data.body.token)
-            sessionStorage.setItem("userInfo", data.body.userInfo)
-            sessionStorage.setItem("account", data.body.account)
-            router.push("/home")
-        }
-    })
-}
-
-const toSignUp = () => {
-    router.push("/signUp")
-
-}
-
 </script>
   
