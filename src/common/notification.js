@@ -5,30 +5,30 @@ import { ElNotification } from 'element-plus'
 const Notification = {
     success: function (title, message) {
         ElNotification({
-            title: 'Success',
+            type: 'success',
             message: message,
-            type: title,
+            title: title,
         })
     },
     warning: function (title, message) {
         ElNotification({
-            title: 'Warning',
+            type: 'warning',
             message: message,
-            type: title,
+            title: title,
         })
     },
     info: function (title, message) {
         ElNotification({
-            title: 'Info',
+            type: 'info',
             message: message,
-            type: title,
+            title: title,
         })
     },
     error: function (title, message) {
         ElNotification({
-            title: 'Error',
+            title: title,
             message: message,
-            type: title,
+            type:'error',
         })
     }
 }
