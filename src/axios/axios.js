@@ -2,6 +2,8 @@ import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from '../common/notification'
 import { useRouter } from 'vue-router'
+
+
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
     timeout: 30000,
@@ -10,7 +12,11 @@ const instance = axios.create({
 
 const router = useRouter()
 axios.interceptors.response.use(function (response) {
-    console.log(response.data)
+    console.log("-----------", response.data)
+    let code = response.data.code
+    if (code == 403) {
+        router.push("/login")
+    }
     return response.data;
 }, function (error) {
     console.log("-----------", error)
@@ -19,17 +25,9 @@ axios.interceptors.response.use(function (response) {
 
 
 instance.interceptors.request.use((config) => {
-    if (sessionStorage.getItem("token") == null) {
-        router.push("/login")
-        return null;
-    }
-    const time = localStorage.getItem("time")
     try {
-        console.log("timetimetime",time)
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"))
-        config.headers.token = localStorage.getItem("token")
-        config.headers.time = time
-        config.headers.userId = userInfo.id
+        const satoken = localStorage.getItem("satoken")
+        config.headers.satoken = satoken
     } catch (e) {
     }
     return config;
@@ -39,23 +37,26 @@ instance.interceptors.request.use((config) => {
 });
 
 const userReq = {
-
     login: function (userName, password) {
         const timestamp = Date.now();
-        const sign = crypto.SHA256(userName + "&" + password + "&" + timestamp)
+        const sign = String(crypto.SHA256(userName + "" + password + "" + timestamp))
         console.log(sign);
-        return instance.get("/user/login?nickName=" + userName + "&timestamp=" + timestamp + "&sign=" + sign)
+        return instance.post("/api/user/login", {
+            "username": userName,
+            "time": timestamp,
+            "pwdSha256": sign
+        })
     }
 }
 
 const ddnsReq = {
 
     findLocalIp: function () {
-        return instance.get("/ddns/findLocalIp")
+        return instance.get("/api/ddns/findLocalIp")
     },
 
     findDomainRecords: function () {
-        return instance.get("/ddns/findDomainRecords")
+        return instance.get("/api/ddns/findDomainRecords")
     }
 
 }

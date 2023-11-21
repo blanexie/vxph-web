@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card" shadow="always">
+  <el-dialog v-model="dialogShow" title="登录">
     <el-form ref="formRef" :model="userInfo" label-width="4rem">
       <el-form-item prop="text" label="用户名" :rules="nickNameRule">
         <el-input v-model="userInfo.nickName" />
@@ -7,18 +7,16 @@
       <el-form-item prop="password" label="密码" :rules="passwordRule">
         <el-input v-model="userInfo.password" type="password" />
       </el-form-item>
-      <el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
         <el-button type="primary" @click="submitForm(userInfo)">登录</el-button>
-        <el-button @click="toSignUp()">注册</el-button>
-      </el-form-item>
-    </el-form></el-card>
+        <el-button @click="toSignUp()"> 注册 </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
-<style scoped>
-.box-card {
-  padding: 2rem;
-  width: 480px;
-}
-</style>
+<style scoped></style>
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { userReq } from '../axios/axios';
@@ -44,7 +42,7 @@ const nickNameRule = [
     trigger: ['blur', 'change'],
   },
 ]
-
+const dialogShow = ref(true)
 const userInfo = reactive<{
   password: string,
   nickName: string
@@ -58,12 +56,11 @@ const submitForm = (userInfo) => {
     const data = resp.data
     console.log(resp)
     if (data.code != 200) {
-      Notification.error("登录失败", data.code + " ; " + data.error)
+      Notification.error("登录失败", data.code + " ; " + data.message)
     } else {
-      localStorage.setItem("token", JSON.stringify(data.body.token))
-      localStorage.setItem("userInfo", JSON.stringify(data.body.userInfo))
-      localStorage.setItem("account", JSON.stringify(data.body.account))
-      localStorage.setItem("time", data.body.time + "")
+      console.log(data.data.tokenValue)
+      localStorage.setItem("satoken", data.data.tokenValue)
+      dialogShow.value = false
       router.push("/home")
     }
   })
