@@ -1,7 +1,7 @@
 <template>
     <el-menu active-text-color="#ffd04b" background-color="#545c64" class="el-menu-vertical-demo" default-active="1"
         text-color="#fff" @open="handleOpen" @close="handleClose">
-        <el-menu-item index="1">
+        <el-menu-item @click="toRouter" index="/home">
             <el-icon>
                 <HomeFilled />
             </el-icon>
@@ -27,7 +27,7 @@
                 <el-menu-item index="1-4-1">item one</el-menu-item>
             </el-sub-menu>
         </el-sub-menu>
-        <el-menu-item index="3">
+        <el-menu-item @click="toRouter" index="/ddns">
             <el-icon><icon-menu /></el-icon>
             <span>DDNS</span>
         </el-menu-item>
@@ -53,17 +53,20 @@
 }
 </style>
 <script lang="ts" setup>
-import {
-    Document,
-    Menu as IconMenu,
-    Location,
-    Setting,
-    HomeFilled,
-} from "@element-plus/icons-vue";
+import { Document, Menu as IconMenu, Location, Setting, HomeFilled, } from "@element-plus/icons-vue";
+import router from "../route/route"
+import { RouteLocationRaw } from "vue-router";
+
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath);
 };
 const handleClose = (key: string, keyPath: string[]) => {
     console.log(key, keyPath);
 };
+
+const toRouter = (e: { index: string; }) => {
+    console.log(e.index)
+    router.push(e.index)
+}
+
 </script>

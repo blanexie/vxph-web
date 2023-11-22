@@ -14,7 +14,7 @@ const router = useRouter()
 axios.interceptors.response.use(function (response) {
     console.log("-----------", response.data)
     let code = response.data.code
-    if (code == 403) {
+    if (code == 625) {
         router.push("/login")
     }
     return response.data;
@@ -50,13 +50,12 @@ const userReq = {
 }
 
 const ddnsReq = {
-
     findLocalIp: function () {
-        return instance.get("/api/ddns/findLocalIp")
+        return instance.get("/api/ddns/ips")
     },
 
     findDomainRecords: function () {
-        return instance.get("/api/ddns/findDomainRecords")
+        return instance.get("/api/ddns/findRecords")
     }
 
 }
