@@ -8,6 +8,7 @@
         <div class="card-div">
             <el-table :data="tableData" :stripe="true" @row-click="rowClieck" :highlight-current-row="true"
                 style="width: 100%" table-layout="auto">
+                <el-table-column hidden prop="id" label="id" />
                 <el-table-column fixed prop="recordId" label="recordId" />
                 <el-table-column prop="type" label="type" />
                 <el-table-column prop="rr" label="rr" />
@@ -21,7 +22,7 @@
         </div>
 
         <el-drawer v-model="drawerData.show" title="解析记录" direction="rtl">
-            <el-form label-position="right" label-width="100px" :model="rowData">
+            <el-form label-position="right" label-width="100px" :model="drawerData.rowData">
                 <el-form-item label="">
                     <el-switch v-model="drawerData.editDisable" :inactive-value="true" :active-value="false" class="mb-2"
                         active-text="修改" />
@@ -79,27 +80,30 @@
 import { reactive, ref, onMounted } from 'vue'
 import { ddnsReq } from "../axios/axios"
 
+class Record {
+    id: number
+    recordId: string
+    domainName: string
+    rr: string
+    type: string
+    value: string
+    ttl: string
+    updateTime: string
+    createTime: string
+    remark: string
+}
+
 const drawerData = ref<{
-    rowData: {
-        recordId: string,
-        domainName: string,
-        rr: string,
-        type: string,
-        value: string,
-        ttl: string,
-        updateTime: string,
-        createTime: string,
-        remark: string,
-    } | undefined,
+    rowData: Record,
     show: boolean,
     editDisable: boolean,
 }>({
-    rowData: undefined,
+    rowData: new Record(),
     show: false,
     editDisable: true
 })
 
-const tableData = ref([])
+const tableData = ref<[Record]>([new Record()])
 const ips = reactive<{
     ipv4: string,
     ipv6: string
@@ -128,6 +132,7 @@ const updateRecord = (rowData) => {
             it.createTime = record.createTime;
             it.updateTime = record.updateTime;
         })
+        drawerData.value.editDisable = true
     })
 
 }

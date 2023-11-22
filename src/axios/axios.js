@@ -6,7 +6,7 @@ import router from '../route/route'
 
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
-    timeout: 10000,
+    timeout: 100000,
 });
 
 instance.interceptors.response.use(
@@ -64,7 +64,7 @@ const ddnsReq = {
     updateRecord: function (rowdata) {
         return instance.post("/api/ddns/updateRecord", rowdata)
     }
-
+    
 }
 
 
