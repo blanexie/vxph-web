@@ -21,37 +21,42 @@
         </div>
 
         <el-drawer v-model="drawerData.show" title="解析记录" direction="rtl">
-            <el-form label-position="right" label-width="100px" :model="rowData" style="max-width: 960px">
+            <el-form label-position="right" label-width="100px" :model="rowData">
                 <el-form-item label="">
-                    <el-switch v-model="editDisable" class="mb-2" active-text="查看中" inactive-text="修改中" />
+                    <el-switch v-model="drawerData.editDisable" :inactive-value="true" :active-value="false" class="mb-2"
+                        active-text="修改" />
                 </el-form-item>
                 <el-form-item label="recordId">
-                    <el-input v-model="drawerData.rowData?.recordId" disabled />
+                    <el-input v-model="drawerData.rowData.recordId" disabled />
                 </el-form-item>
                 <el-form-item label="domain">
-                    <el-input v-model="drawerData.rowData?.domainName" :disabled="editDisable" />
+                    <el-input v-model="drawerData.rowData.domainName" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="rr">
-                    <el-input v-model="drawerData.rowData?.rr" :disabled="editDisable" />
+                    <el-input v-model="drawerData.rowData.rr" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="type">
-                    <el-input v-model="drawerData.rowData?.type" :disabled="editDisable" />
+                    <el-input v-model="drawerData.rowData.type" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="value">
-                    <el-input v-model="drawerData.rowData?.value" :disabled="editDisable" />
+                    <el-input v-model="drawerData.rowData.value" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="ttl">
-                    <el-input v-model="drawerData.rowData?.ttl" :disabled="editDisable" />
-                </el-form-item>
-                <el-form-item label="updateTime">
-                    <el-input v-model="drawerData.rowData?.updateTime" :disabled="editDisable" />
-                </el-form-item>
-
-                <el-form-item label="createTime">
-                    <el-input v-model="drawerData.rowData?.createTime" :disabled="editDisable" />
+                    <el-input v-model="drawerData.rowData.ttl" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="remark">
-                    <el-input v-model="drawerData.rowData?.remark" :disabled="editDisable" />
+                    <el-input type="textarea" v-model="drawerData.rowData.remark" :disabled="drawerData.editDisable" />
+                </el-form-item>
+
+                <el-form-item label="updateTime">
+                    <el-input v-model="drawerData.rowData.updateTime" disabled />
+                </el-form-item>
+                <el-form-item label="createTime">
+                    <el-input v-model="drawerData.rowData.createTime" disabled />
+                </el-form-item>
+                <el-form-item>
+                    <el-button :disabled="drawerData.editDisable" type="primary"
+                        @click="updateRecord(drawerData.rowData)">提交</el-button>
                 </el-form-item>
             </el-form>
         </el-drawer>
@@ -94,21 +99,6 @@ const drawerData = ref<{
     editDisable: true
 })
 
-const rowData = ref<{
-    recordId: string,
-    domainName: string,
-    rr: string,
-    type: string,
-    value: string,
-    ttl: string,
-    updateTime: string,
-    createTime: string,
-    remark: string,
-}>()
-
-const drawer = ref(false)
-const editDisable = ref(false)
-
 const tableData = ref([])
 const ips = reactive<{
     ipv4: string,
@@ -119,25 +109,42 @@ const ips = reactive<{
 })
 
 const rowClieck = (row) => {
-    console.log(row)
-    rowData.value = row
-    drawer.value = true
-    editDisable.value = true
+    drawerData.value.rowData = row
+    drawerData.value.show = true
+    drawerData.value.editDisable = true
+}
+
+const updateRecord = (rowData) => {
+    ddnsReq.updateRecord(rowData).then(resp => {
+        let record = resp.data
+        tableData.value.filter(it => it.id = resp.data.id).forEach(it => {
+            it.recordId = record.recordId;
+            it.type = record.type;
+            it.rr = record.rr;
+            it.domainName = record.domainName;
+            it.value = record.value;
+            it.ttl = record.ttl;
+            it.remark = record.remark;
+            it.createTime = record.createTime;
+            it.updateTime = record.updateTime;
+        })
+    })
+
 }
 
 
 onMounted(() => {
 
     ddnsReq.findLocalIp().then(resp => {
-        const body = resp.data.data
+        const body = resp.data
         ips.ipv4 = body.ipv4
         ips.ipv6 = body.ipv6
-    }),
+    });
 
-        ddnsReq.findDomainRecords().then(resp => {
-            const body = resp.data.data
-            tableData.value = body
-        })
+    ddnsReq.findDomainRecords().then(resp => {
+        const body = resp.data
+        tableData.value = body
+    })
 });
 </script>
   

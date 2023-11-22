@@ -1,28 +1,30 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from '../common/notification'
-import { useRouter } from 'vue-router'
+import router from '../route/route'
 
 
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
-    timeout: 30000,
+    timeout: 10000,
 });
 
-
-const router = useRouter()
-axios.interceptors.response.use(function (response) {
-    console.log("-----------", response.data)
-    let code = response.data.code
-    if (code == 625) {
-        router.push("/login")
+instance.interceptors.response.use(
+    (res) => {
+        console.log("instance.interceptors.response", res.data)
+        let code = res.data.code
+        if (code === 625) {
+            Notification.error("权限不足", res.data.message)
+        } else if (code == 403) {
+            router.push("/login")
+        } else {
+            return res.data
+        }
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return response.data;
-}, function (error) {
-    console.log("-----------", error)
-    return Promise.reject(error);
-});
-
+)
 
 instance.interceptors.request.use((config) => {
     try {
@@ -40,12 +42,14 @@ const userReq = {
     login: function (userName, password) {
         const timestamp = Date.now();
         const sign = String(crypto.SHA256(userName + "" + password + "" + timestamp))
-        console.log(sign);
         return instance.post("/api/user/login", {
             "username": userName,
             "time": timestamp,
             "pwdSha256": sign
         })
+    },
+    userInfo: function () {
+        return instance.get("/api/user/info")
     }
 }
 
@@ -56,6 +60,9 @@ const ddnsReq = {
 
     findDomainRecords: function () {
         return instance.get("/api/ddns/findRecords")
+    },
+    updateRecord: function (rowdata) {
+        return instance.post("/api/ddns/updateRecord", rowdata)
     }
 
 }

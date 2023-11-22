@@ -53,13 +53,11 @@ const userInfo = reactive<{
 
 const submitForm = (userInfo) => {
   userReq.login(userInfo.nickName, userInfo.password).then(resp => {
-    const data = resp.data
-    console.log(resp)
-    if (data.code != 200) {
-      Notification.error("登录失败", data.code + " ; " + data.message)
+    if (resp.code != 200) {
+      Notification.error("登录失败", resp.code + " ; " + resp.message)
     } else {
-      console.log(data.data.tokenValue)
-      localStorage.setItem("satoken", data.data.tokenValue)
+      console.log(resp.data.tokenValue)
+      localStorage.setItem("satoken", resp.data.tokenValue)
       dialogShow.value = false
       router.push("/home")
     }
