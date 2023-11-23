@@ -41,7 +41,13 @@
             <el-icon>
                 <setting />
             </el-icon>
-            <span>角色权限</span>
+            <span>角色管理</span>
+        </el-menu-item>
+        <el-menu-item @click="toRouter" index="/permission">
+            <el-icon>
+                <setting />
+            </el-icon>
+            <span>权限管理</span>
         </el-menu-item>
     </el-menu>
 </template>

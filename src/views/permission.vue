@@ -1,24 +1,20 @@
 <template>
     <div class="card-div">
-        <el-table :data="tableData" :stripe="true" border :highlight-current-row="true" style="width: 100%"
+        <el-table :data="tableData" :stripe="true" @row-click="rowClieck" :highlight-current-row="true" style="width: 100%"
             table-layout="auto">
             <el-table-column fixed prop="name" label="name" />
             <el-table-column prop="code" label="code" />
+            <el-table-column prop="type" label="type" />
             <el-table-column prop="description" label="description" />
             <el-table-column prop="status" label="status" />
             <el-table-column prop="createTime" label="createTime" />
             <el-table-column prop="updateTime" label="updateTime" />
-            <el-table-column label="operation">
-                <template #default="scope">
-                    <el-button link type="primary" size="small" @click.prevent="rowClick(scope.row)">
-                        修改
-                    </el-button>
-                    <el-button link type="primary" size="small" @click.prevent="updatePermission(scope.row)">
-                        授权
-                    </el-button>
-                </template>
-            </el-table-column>
         </el-table>
+        <br />
+        <!-- <el-pagination background layout="prev, pager, next" :page-size="pageSize" :current-page="currentPage"
+            :total="total" /> -->
+        <el-pagination background layout="prev, pager, next" @current-change="handleCurrentChange"
+            :current-page="currentPage" :page-size="pageSize" :page-count="totalPage" />
         <el-drawer v-model="drawerData.show" title="角色信息" size="500" direction="rtl">
             <el-form label-position="right" label-width="100px" :model="drawerData.rowData">
                 <el-form-item label="修改">
@@ -26,10 +22,13 @@
                         active-text="" />
                 </el-form-item>
                 <el-form-item label="code">
-                    <el-input v-model="drawerData.rowData.code" disabled />
+                    <el-input v-model="drawerData.rowData.code" :disabled="drawerData.rowData.type == 'Path'" />
                 </el-form-item>
                 <el-form-item label="name">
                     <el-input v-model="drawerData.rowData.name" :disabled="drawerData.editDisable" />
+                </el-form-item>
+                <el-form-item label="type">
+                    <el-input v-model="drawerData.rowData.type" disabled />
                 </el-form-item>
                 <el-form-item label="description">
                     <el-input type="textarea" v-model="drawerData.rowData.description" :disabled="drawerData.editDisable" />
@@ -37,11 +36,11 @@
                 <el-form-item label="status">
                     <el-input v-model="drawerData.rowData.status" :disabled="drawerData.editDisable" />
                 </el-form-item>
-                <el-form-item label="createTime">
-                    <el-input v-model="drawerData.rowData.createTime" disabled />
-                </el-form-item>
                 <el-form-item label="updateTime">
                     <el-input v-model="drawerData.rowData.updateTime" disabled />
+                </el-form-item>
+                <el-form-item label="createTime">
+                    <el-input v-model="drawerData.rowData.createTime" disabled />
                 </el-form-item>
                 <el-form-item>
                     <el-button :disabled="drawerData.editDisable" type="primary">提交</el-button>
@@ -49,9 +48,6 @@
             </el-form>
         </el-drawer>
 
-        <el-drawer v-model="drawerPermission.show" title="授权" size="800" direction="rtl">
-            <Per></Per>
-        </el-drawer>
     </div>
 </template>
 <style scoped>
@@ -62,79 +58,55 @@
     background-color: #ffffff;
 }
 </style>
+
 <script lang="ts" setup>
 import { reactive, computed, ref, onMounted } from 'vue'
-import { roleReq } from "../axios/axios"
-import Per from "./permission.vue"
+import { permissionReq } from "../axios/axios"
 
 class Permission {
     code: string
     name: string
     description: string
     type: string
-}
-class Role {
-    id: number
-    code: string
-    name: string
-    description: string
-    status: number
     createTime: string
     updateTime: string
-    permissions: Array<Permission>
+    status: Number
 }
 
-
-const drawerPermission = ref<{
-    role: Role,
-    permissions: [],
-    pageContent: [],
-    page: Number,
-    pageSize: Number,
-    totalPage: Number,
-    show: boolean,
-    editDisable: boolean,
-}>({
-    role: new Role(),
-    permissions: [],
-    pageContent: [],
-    page: 1,
-    pageSize: 10,
-    totalPage: 1,
-    show: false,
-    editDisable: true
-})
-
 const drawerData = ref<{
-    rowData: Role,
+    rowData: Permission,
     show: boolean,
     editDisable: boolean,
 }>({
-    rowData: new Role(),
+    rowData: new Permission(),
     show: false,
     editDisable: true
 })
+let totalPage = ref(1)
+const pageSize = ref(10)
+const currentPage = ref(1)
 
-const tableData = ref<[Role]>([new Role()])
-const rowClick = (row: Role) => {
+const tableData = ref<[Permission]>([new Permission()])
+
+
+const rowClieck = (row: Permission) => {
     drawerData.value.rowData = row
     drawerData.value.show = true
     drawerData.value.editDisable = true
 }
-
-const updatePermission = (row) => {
-    drawerPermission.value.role = row
-    drawerPermission.value.show = true
-    drawerPermission.value.editDisable = true
-}
-
-onMounted(() => {
-    //获取所有的角色
-    roleReq.roleList().then(resp => {
+const handleCurrentChange = (cp) => {
+    console.log(cp)
+    permissionReq.list({ pageSize: pageSize.value, page: cp }).then(resp => {
         console.log(resp)
-        tableData.value = resp?.data
+        let data = resp.data
+        pageSize.value = data.size
+        currentPage.value = data.number + 1
+        totalPage.value = data.totalPages
+        tableData.value = data.content
     })
-
+}
+onMounted(() => {
+    handleCurrentChange(1)
 })
 
 </script>

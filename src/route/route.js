@@ -13,6 +13,9 @@ const routes = [
     {
         path: '/role',
         component: () => import('../views/role.vue')
+    }, {
+        path: '/permission',
+        component: () => import('../views/permission.vue')
     },
     {
         path: '/signUp',

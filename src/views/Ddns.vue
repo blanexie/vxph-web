@@ -139,13 +139,13 @@ const updateRecord = (rowData: Record) => {
 onMounted(() => {
 
     ddnsReq.findLocalIp().then(resp => {
-        const body = resp.data
+        const body = resp?.data
         ips.ipv4 = body.ipv4
         ips.ipv6 = body.ipv6
     });
 
     ddnsReq.findDomainRecords().then(resp => {
-        const body = resp.data
+        const body = resp?.data
         tableData.value = body
     })
 });

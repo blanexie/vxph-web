@@ -16,9 +16,12 @@ instance.interceptors.response.use(
         if (code === 625) {
             Notification.error("权限不足", res.data.message)
         } else if (code == 403) {
+            console.log("to login", res.data)
             router.push("/login")
-        } else {
+        } else if(code == 200)  {
             return res.data
+        }else{
+            Notification.error("异常"+code, res.data.message)
         }
     },
     (error) => {
@@ -69,7 +72,7 @@ const ddnsReq = {
 
 const roleReq = {
     roleList: () => {
-        return instance.get("/api/role/roles")
+        return instance.get("/api/role/list")
     },
     addPermission: (roleCode, permissionCode) => {
         return instance.get("/api/role/addPermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)
@@ -79,4 +82,10 @@ const roleReq = {
     }
 }
 
-export { userReq, ddnsReq, roleReq }
+const permissionReq = {
+    list: (data) => {
+        return instance.post("/api/permission/query", data)
+    }
+}
+
+export { userReq, ddnsReq, roleReq, permissionReq }
