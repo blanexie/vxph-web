@@ -37,11 +37,11 @@
             </el-icon>
             <span>Torrent</span>
         </el-menu-item>
-        <el-menu-item index="5">
+        <el-menu-item @click="toRouter" index="/role">
             <el-icon>
                 <setting />
             </el-icon>
-            <span>系统管理</span>
+            <span>角色权限</span>
         </el-menu-item>
     </el-menu>
 </template>

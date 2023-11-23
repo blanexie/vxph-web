@@ -8,7 +8,6 @@
         <div class="card-div">
             <el-table :data="tableData" :stripe="true" @row-click="rowClieck" :highlight-current-row="true"
                 style="width: 100%" table-layout="auto">
-                <el-table-column hidden prop="id" label="id" />
                 <el-table-column fixed prop="recordId" label="recordId" />
                 <el-table-column prop="type" label="type" />
                 <el-table-column prop="rr" label="rr" />
@@ -43,7 +42,7 @@
                     <el-input v-model="drawerData.rowData.value" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="ttl">
-                    <el-input v-model="drawerData.rowData.ttl" :disabled="drawerData.editDisable" />
+                    <el-input-number v-model="drawerData.rowData.ttl" :min="600"  :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="remark">
                     <el-input type="textarea" v-model="drawerData.rowData.remark" :disabled="drawerData.editDisable" />
@@ -102,7 +101,6 @@ const drawerData = ref<{
     show: false,
     editDisable: true
 })
-
 const tableData = ref<[Record]>([new Record()])
 const ips = reactive<{
     ipv4: string,
@@ -112,13 +110,13 @@ const ips = reactive<{
     ipv6: ''
 })
 
-const rowClieck = (row) => {
+const rowClieck = (row: Record) => {
     drawerData.value.rowData = row
     drawerData.value.show = true
     drawerData.value.editDisable = true
 }
 
-const updateRecord = (rowData) => {
+const updateRecord = (rowData: Record) => {
     ddnsReq.updateRecord(rowData).then(resp => {
         let record = resp.data
         tableData.value.filter(it => it.id = resp.data.id).forEach(it => {

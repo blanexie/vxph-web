@@ -39,7 +39,7 @@ instance.interceptors.request.use((config) => {
 });
 
 const userReq = {
-    login: function (userName, password) {
+    login: (userName, password) => {
         const timestamp = Date.now();
         const sign = String(crypto.SHA256(userName + "" + password + "" + timestamp))
         return instance.post("/api/user/login", {
@@ -48,7 +48,7 @@ const userReq = {
             "pwdSha256": sign
         })
     },
-    userInfo: function () {
+    userInfo: () => {
         return instance.get("/api/user/info")
     }
 }
@@ -64,8 +64,19 @@ const ddnsReq = {
     updateRecord: function (rowdata) {
         return instance.post("/api/ddns/updateRecord", rowdata)
     }
-    
+
 }
 
+const roleReq = {
+    roleList: () => {
+        return instance.get("/api/role/roles")
+    },
+    addPermission: (roleCode, permissionCode) => {
+        return instance.get("/api/role/addPermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)
+    },
+    removePermission: (roleCode, permissionCode) => {
+        return instance.get("/api/role/removePermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)
+    }
+}
 
-export { userReq, ddnsReq }
+export { userReq, ddnsReq, roleReq }

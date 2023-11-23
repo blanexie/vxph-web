@@ -11,6 +11,10 @@ const routes = [
         component: () => import('../views/home.vue')
     },
     {
+        path: '/role',
+        component: () => import('../views/role.vue')
+    },
+    {
         path: '/signUp',
         component: () => import('../views/SignUp.vue')
     },
@@ -20,13 +24,13 @@ const routes = [
     },
     {
         path: '/ddns',
-        component: () => import('../views/Ddns.vue')
+        component: () => import('../views/ddns.vue')
     },
 ]
 
 
 const router = createRouter({
-    history: createWebHistory(), //使用history模式，hash模式使用 createWebHashHistory() 方法
+    history: createWebHistory(),   
     routes
 })
 

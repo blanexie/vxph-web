@@ -21,9 +21,7 @@
 import { reactive, ref } from 'vue'
 import { userReq } from '../axios/axios';
 import Notification from '../common/notification'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import router from '../route/route'
 
 const passwordRule = {
   required: true,
@@ -53,8 +51,9 @@ const userInfo = reactive<{
 
 const submitForm = (userInfo) => {
   userReq.login(userInfo.nickName, userInfo.password).then(resp => {
-    if (resp.code != 200) {
-      Notification.error("登录失败", resp.code + " ; " + resp.message)
+    let code = resp.code
+    if (code != 200) {
+      Notification.error("登录失败", code + " ; " + resp.message)
     } else {
       console.log(resp.data.tokenValue)
       localStorage.setItem("satoken", resp.data.tokenValue)
