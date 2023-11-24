@@ -77,20 +77,8 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
-import { ddnsReq } from "../axios/axios"
-
-class Record {
-    id: number
-    recordId: string
-    domainName: string
-    rr: string
-    type: string
-    value: string
-    ttl: string
-    updateTime: string
-    createTime: string
-    remark: string
-}
+import { ddnsReq } from "../common/axios"
+import {Record} from "../common/class"
 
 const drawerData = ref<{
     rowData: Record,
@@ -129,6 +117,7 @@ const updateRecord = (rowData: Record) => {
             it.remark = record.remark;
             it.createTime = record.createTime;
             it.updateTime = record.updateTime;
+            it.versionNo = record.versionNo
         })
         drawerData.value.editDisable = true
     })
@@ -151,3 +140,4 @@ onMounted(() => {
 });
 </script>
   
+../common/axios

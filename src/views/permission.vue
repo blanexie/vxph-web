@@ -61,17 +61,8 @@
 
 <script lang="ts" setup>
 import { reactive, computed, ref, onMounted } from 'vue'
-import { permissionReq } from "../axios/axios"
-
-class Permission {
-    code: string
-    name: string
-    description: string
-    type: string
-    createTime: string
-    updateTime: string
-    status: Number
-}
+import { permissionReq } from "../common/axios"
+import { Permission } from "../common/class"
 
 const drawerData = ref<{
     rowData: Permission,
@@ -82,11 +73,12 @@ const drawerData = ref<{
     show: false,
     editDisable: true
 })
+
 let totalPage = ref(1)
 const pageSize = ref(10)
 const currentPage = ref(1)
 
-const tableData = ref<[Permission]>([new Permission()])
+const tableData = ref<Permission[]>([])
 
 
 const rowClieck = (row: Permission) => {
@@ -109,4 +101,4 @@ onMounted(() => {
     handleCurrentChange(1)
 })
 
-</script>
+</script>../common/axios

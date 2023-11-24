@@ -60,8 +60,7 @@
 </style>
 <script lang="ts" setup>
 import { Document, Menu as IconMenu, Location, Setting, HomeFilled, } from "@element-plus/icons-vue";
-import router from "../route/route"
-import { RouteLocationRaw } from "vue-router";
+import router from "../common/route"
 
 const handleOpen = (key: string, keyPath: string[]) => {
     console.log(key, keyPath);

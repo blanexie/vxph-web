@@ -1,7 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
-import Notification from '../common/notification'
-import router from '../route/route'
+import Notification from './notification'
+import router from './route'
 
 
 const instance = axios.create({
@@ -18,10 +18,10 @@ instance.interceptors.response.use(
         } else if (code == 403) {
             console.log("to login", res.data)
             router.push("/login")
-        } else if(code == 200)  {
+        } else if (code == 200) {
             return res.data
-        }else{
-            Notification.error("异常"+code, res.data.message)
+        } else {
+            Notification.error("异常" + code, res.data.message)
         }
     },
     (error) => {
@@ -73,6 +73,9 @@ const ddnsReq = {
 const roleReq = {
     roleList: () => {
         return instance.get("/api/role/list")
+    },
+    save: (role) => {
+        return instance.post("/api/role/save", role)
     },
     addPermission: (roleCode, permissionCode) => {
         return instance.get("/api/role/addPermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)

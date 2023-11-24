@@ -19,9 +19,9 @@
 <style scoped></style>
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { userReq } from '../axios/axios';
+import { userReq } from '../common/axios';
 import Notification from '../common/notification'
-import router from '../route/route'
+import router from '../common/route'
 
 const passwordRule = {
   required: true,
@@ -69,3 +69,4 @@ const toSignUp = () => {
 }
 
 </script>
+../common/axios

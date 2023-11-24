@@ -36,7 +36,7 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { userReq } from '../axios/axios';
+import { userReq } from '../common/axios';
 import Notification from '../common/notification'
 import { useRouter } from 'vue-router'
 
@@ -81,4 +81,4 @@ const submitForm = (userInfo) => {
 }
 
 </script>
-  
+  ../common/axios
