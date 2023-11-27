@@ -77,12 +77,10 @@ const roleReq = {
     save: (role) => {
         return instance.post("/api/role/save", role)
     },
-    addPermission: (roleCode, permissionCode) => {
-        return instance.get("/api/role/addPermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)
+    delete: (roleCode) => {
+        return instance.get("/api/role/delete?roleCode=" + roleCode)
     },
-    removePermission: (roleCode, permissionCode) => {
-        return instance.get("/api/role/removePermission?roleCode=" + roleCode + "&permissionCode=" + permissionCode)
-    }
+
 }
 
 const permissionReq = {

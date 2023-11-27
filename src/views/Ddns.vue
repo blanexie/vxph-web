@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="card-div f-box-card">
+        <div class="card-div">
             <p>服务器ipv4 : {{ ips.ipv4 }}</p>
             <p>服务器ipv6 : {{ ips.ipv6 }}</p>
         </div>
 
         <div class="card-div">
-            <el-table :data="tableData" :stripe="true" @row-click="rowClieck" :highlight-current-row="true"
+            <el-table :data="tableData" :stripe="true" border @row-click="rowClieck" :highlight-current-row="true"
                 style="width: 100%" table-layout="auto">
                 <el-table-column fixed prop="recordId" label="recordId" />
                 <el-table-column prop="type" label="type" />
@@ -66,14 +66,12 @@
 <style scoped>
 .card-div {
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 20px;
     border-radius: px;
     background-color: #ffffff;
 }
 
-.f-box-card {
-    margin-bottom: 10px;
-}
+
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'

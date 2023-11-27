@@ -31,7 +31,7 @@
             <el-icon><icon-menu /></el-icon>
             <span>DDNS</span>
         </el-menu-item>
-        <el-menu-item index="4">
+        <el-menu-item  @click="toRouter" index="/torrent">
             <el-icon>
                 <document />
             </el-icon>
