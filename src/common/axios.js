@@ -5,15 +5,13 @@ import Notification from './notification'
 import router from './route.js'
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8018',
+    baseURL: 'http://192.168.1.6:8018',
     timeout: 100000,
 });
 
 instance.interceptors.response.use(
     (res) => {
-        console.log("instance.interceptors.response", res.data)
         let code = res.data.code
-        console.log("code == 403", code == 403)
         if (code === 625) {
             Notification.error("权限不足", res.data.message)
         } else if (code == 403) {
