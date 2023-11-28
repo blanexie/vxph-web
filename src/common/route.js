@@ -26,8 +26,8 @@ const routes = [
         component: () => import('../views/home.vue')
     },
     {
-        path: '/torrent',
-        component: () => import('../views/torrent.vue')
+        path: '/post',
+        component: () => import('../views/post.vue')
     },
     {
         path: '/ddns',

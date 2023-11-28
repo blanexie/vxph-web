@@ -1,8 +1,8 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from './notification'
-import router from './route'
 
+import router from './route.js'
 
 const instance = axios.create({
     baseURL: 'http://localhost:8018',
@@ -13,6 +13,7 @@ instance.interceptors.response.use(
     (res) => {
         console.log("instance.interceptors.response", res.data)
         let code = res.data.code
+        console.log("code == 403", code == 403)
         if (code === 625) {
             Notification.error("权限不足", res.data.message)
         } else if (code == 403) {
@@ -89,4 +90,10 @@ const permissionReq = {
     }
 }
 
-export { userReq, ddnsReq, roleReq, permissionReq }
+const postReq = {
+    query: (data) => {
+        return instance.post("/api/post/query", data)
+    }
+}
+
+export { userReq, ddnsReq, roleReq, permissionReq, postReq }

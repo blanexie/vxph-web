@@ -20,13 +20,18 @@
             <el-table-column prop="updateTime" label="updateTime" />
             <el-table-column prop="createTime" label="createTime" />
         </el-table>
+
+
+        <el-drawer v-model="drawerShow" title="帖子信息" @close="" size="900" direction="rtl">
+            <markdowEdit></markdowEdit>
+        </el-drawer>
+
     </div>
 </template>
 <style scoped>
 .keyword-class {
     margin: 10px;
     width: 400px;
-
 }
 
 .card-div {
@@ -38,8 +43,11 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
-import { ddnsReq } from "../common/axios"
+import { postReq } from "../common/axios"
 import { Post } from "../common/class"
+import markdowEdit from '../components/markdowEdit.vue';
+
+const drawerShow = ref(true)
 
 const tableData = ref<{
     content: Post[],
@@ -57,7 +65,12 @@ const tableData = ref<{
 })
 
 const search = () => {
-
+    const tv = tableData.value
+    postReq.query({
+        page: tv.page, pageSize: tv.pageSize, keyword: tv.keyword
+    }).then(resp => {
+        console.log(resp)
+    })
 }
 
 </script>

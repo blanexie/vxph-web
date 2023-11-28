@@ -58,7 +58,7 @@ const submitForm = (userInfo) => {
       console.log(resp.data.tokenValue)
       localStorage.setItem("satoken", resp.data.tokenValue)
       dialogShow.value = false
-      router.push("/home")
+      router.back()
     }
   })
 }

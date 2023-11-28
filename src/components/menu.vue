@@ -31,11 +31,11 @@
             <el-icon><icon-menu /></el-icon>
             <span>DDNS</span>
         </el-menu-item>
-        <el-menu-item  @click="toRouter" index="/torrent">
+        <el-menu-item  @click="toRouter" index="/post">
             <el-icon>
                 <document />
             </el-icon>
-            <span>Torrent</span>
+            <span>Post</span>
         </el-menu-item>
         <el-menu-item @click="toRouter" index="/role">
             <el-icon>
@@ -63,14 +63,11 @@ import { Document, Menu as IconMenu, Location, Setting, HomeFilled, } from "@ele
 import router from "../common/route"
 
 const handleOpen = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath);
 };
 const handleClose = (key: string, keyPath: string[]) => {
-    console.log(key, keyPath);
 };
 
 const toRouter = (e: { index: string; }) => {
-    console.log(e.index)
     router.push(e.index)
 }
 
