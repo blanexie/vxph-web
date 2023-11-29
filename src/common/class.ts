@@ -53,6 +53,7 @@ class FileResource {
     length: Number
     file: File
     base64:string 
+    url:String
     owner: User
     status: Number
     updateTime: string
@@ -99,7 +100,7 @@ class Post {
     owner: User
     imgs: FileResource[]
     markdown: String
-    torrents: Torrent[]
+    torrents: File[]
     labels: Label[]
     remark: string
     status: Number
