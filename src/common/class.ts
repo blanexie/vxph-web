@@ -1,3 +1,9 @@
+class User {
+    id: Number
+    name: String
+    email: String
+}
+
 
 class Permission {
     code: string
@@ -37,7 +43,6 @@ class Record {
     status: Number
     updateTime: string
     createTime: string
-    versionNo: Number
 
 }
 
@@ -46,6 +51,8 @@ class FileResource {
     name: String
     suffix: String  //文件的后缀，同时也是表示文件的类型，
     length: Number
+    file: File
+    base64:string 
     owner: User
     status: Number
     updateTime: string
@@ -129,4 +136,4 @@ class Torrent {
 }
 
 
-export { Permission, Role, Record, Post, Torrent, FileResource, Peer }
+export { Permission, Role, Record, Post, Torrent, FileResource, Peer, Label }

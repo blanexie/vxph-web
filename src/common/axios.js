@@ -4,8 +4,11 @@ import Notification from './notification'
 
 import router from './route.js'
 
+
+const baseServerURL = 'http://127.0.0.1:8018'
+
 const instance = axios.create({
-    baseURL: 'http://192.168.1.6:8018',
+    baseURL: baseServerURL,
     timeout: 100000,
 });
 
@@ -94,4 +97,10 @@ const postReq = {
     }
 }
 
-export { userReq, ddnsReq, roleReq, permissionReq, postReq }
+const labelReq = {
+    list: () => {
+        return instance.get("/api/label/list")
+    }
+}
+
+export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq }

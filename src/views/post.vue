@@ -23,7 +23,7 @@
 
 
         <el-drawer v-model="drawerShow" title="帖子信息" @close="" size="900" direction="rtl">
-            <markdowEdit></markdowEdit>
+            <mkEdit></mkEdit>
         </el-drawer>
 
     </div>
@@ -45,7 +45,7 @@
 import { reactive, ref, onMounted } from 'vue'
 import { postReq } from "../common/axios"
 import { Post } from "../common/class"
-import markdowEdit from '../components/markdowEdit.vue';
+import mkEdit from '../components/mkEdit.vue';
 
 const drawerShow = ref(true)
 
