@@ -31,7 +31,7 @@
             <el-icon><icon-menu /></el-icon>
             <span>DDNS</span>
         </el-menu-item>
-        <el-menu-item  @click="toRouter" index="/post">
+        <el-menu-item @click="toRouter" index="/post">
             <el-icon>
                 <document />
             </el-icon>
@@ -60,15 +60,12 @@
 </style>
 <script lang="ts" setup>
 import { Document, Menu as IconMenu, Location, Setting, HomeFilled, } from "@element-plus/icons-vue";
-import router from "../common/route"
+import { toRouter } from '../common/util'
 
 const handleOpen = (key: string, keyPath: string[]) => {
 };
 const handleClose = (key: string, keyPath: string[]) => {
 };
 
-const toRouter = (e: { index: string; }) => {
-    router.push(e.index)
-}
 
 </script>

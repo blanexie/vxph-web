@@ -1,8 +1,9 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
-import Notification from './notification'
+import Notification from './notification.js'
 
 import router from './route.js'
+import { FileResource, Post } from './class'
 
 
 const baseServerURL = 'http://127.0.0.1:8018'
@@ -94,6 +95,9 @@ const permissionReq = {
 const postReq = {
     query: (data) => {
         return instance.post("/api/post/query", data)
+    },
+    save: (post: Post) => {
+        return instance.post("/api/post/save", post)
     }
 }
 
@@ -103,4 +107,17 @@ const labelReq = {
     }
 }
 
-export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq }
+
+const fileResourceReq = {
+    upload: (fileResource: FileResource) => {
+        let formData = new FormData();
+        formData.append("hash", fileResource.hash);
+        formData.append("file", fileResource.file);
+        return instance.post("/api/resource/upload", formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+    }
+
+}
+
+export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq }

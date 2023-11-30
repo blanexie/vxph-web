@@ -47,7 +47,7 @@ class Record {
 }
 
 class FileResource {
-    hash: String
+    hash: string
     name: String
     suffix: String  //文件的后缀，同时也是表示文件的类型，
     length: Number
@@ -99,7 +99,7 @@ class Post {
     coverImg: FileResource
     owner: User
     imgs: FileResource[]
-    markdown: String
+    markdown: string
     torrents: File[]
     labels: Label[]
     remark: string

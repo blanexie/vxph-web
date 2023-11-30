@@ -19,7 +19,7 @@
 }
 </style>
 <script lang="ts" setup>
-import { labelReq } from '../common/axios';
+import { labelReq } from '../common/request';
 import { onMounted, reactive, ref } from 'vue';
 import { Label } from '../common/class'
 

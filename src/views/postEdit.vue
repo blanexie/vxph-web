@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="card-div">
         <el-form :model="post" label-width="120px">
             <el-form-item label="标题">
-                <el-input v-model="post.title" />
+                <el-input class="title" v-model="post.title" />
             </el-form-item>
             <el-form-item label="封面">
                 <ImgSelect v-model="post.coverImg"></ImgSelect>
@@ -14,49 +14,86 @@
                 <input type="file" @change="torrentInputChange" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="test">test</el-button>
-                <el-button type="primary" @click="$emit('update:modelValue', post)">提交</el-button>
+                <el-button type="primary" @click="savePost">提交</el-button>
             </el-form-item>
         </el-form>
-
-        <MdEditor v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize" :toolbars="toolbars" />
+    </div>
+    <div class="card-div">
+        <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"
+            :toolbars="toolbars" />
 
     </div>
 </template>
 <style scoped >
+.card-div {
+    min-width: 850px;
+}
+
+.edit {
+    max-width: 1080px;
+}
+
+.title {
+    width: 560px;
+}
+
 .coverClass {
     height: 150px;
 }
 </style>
 <script lang="ts" setup>
-import { ref, reactive } from 'vue';
-import { MdEditor, ToolbarNames } from 'md-editor-v3';
+import { ref, reactive, onMounted } from 'vue';
+import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import { Post, FileResource } from '../common/class';
-import ImgSelect from './ImgSelect.vue'
-import LabelSelect from './labelSelect.vue'
+import ImgSelect from '../components/ImgSelect.vue'
+import LabelSelect from '../components/labelSelect.vue'
 import { fileToBase64, modifyHTML } from '../common/util';
+import { fileResourceReq } from '../common/request'
+import { postReq } from '../common/request';
 
-
-defineProps(['modelValue'])
-
-
+const props = defineProps(['modelValue'])
 const fileMap = reactive<Map<String, FileResource>>(new Map())
-
 const markdownText = ref<string>("")
+const post = ref<Post>(new Post())
 
-const post = reactive<Post>(new Post())
+onMounted(() => {
+    // 初始化
+    post.value = (props.modelValue as Post) ?? new Post()
+    markdownText.value = post.value.markdown
+});
 
-const test = () => {
-    console.log(post)
-    console.log(markdownText.value)
+//保存
+const savePost = () => {
+    const postData = post.value
+    //0. 校验必填项目
+    console.log("开发阶段，跳过必填项目", postData)
+    //1. 上传FileResource 
+    fileMap.forEach((v: FileResource, k: String) => {
+        fileResourceReq.upload(v).then(resp => {
+            if (resp) {
+                fileMap.set(k, resp.data)
+            }
+        })
+    })
+    fileResourceReq.upload(postData.coverImg).then(resp => {
+        if (resp) {
+            postData.coverImg = resp.data
+        }
+    })
+    //2. 保存post
+    postData.markdown = markdownText.value
+    postReq.save(postData).then(resp => {
+        console.log("save post ", resp)
+    })
+
+    //3. 上传保存torrent
+
 }
 
 const torrentInputChange = (element) => {
-    post.torrents = element.target.files
+    post.value.torrents = element.target.files
 }
-
-
 
 const onUploadImg = async (files, callback) => {
     const res = await Promise.all(
@@ -73,9 +110,9 @@ const onUploadImg = async (files, callback) => {
             });
         })
     );
-
     callback(res.map((item) => item.url));
 };
+
 const sanitize = (html: string) => {
     let rhtml = modifyHTML(html, fileMap)
     return rhtml

@@ -3,7 +3,7 @@
         <p v-if="coverImg.show">
             <img class="coverClass" :src="coverImg.src" /> &nbsp;&nbsp;
         </p>
-        <input type="file" @change="handleCoverImg" accept="image/jpg;image/png;image/jpeg" class="input-select" />
+        <input type="file" @change="handleCoverImg" accept="image/*" class="input-select" />
     </div>
 </template>
 <style scoped >
@@ -16,7 +16,7 @@
 import { reactive, ref, onMounted } from 'vue';
 import Notification from '../common/notification'
 import { fileToBase64 } from '../common/util';
-import { baseServerURL } from '../common/axios'
+import { baseServerURL } from '../common/request'
 import { FileResource } from '../common/class';
 
 const props = defineProps(['modelValue'])

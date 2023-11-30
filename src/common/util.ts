@@ -1,6 +1,7 @@
 
-import { FileResource, Label } from "./class";
-
+import { FileResource } from "./class";
+import router from "../common/route"
+import crypto from 'crypto-js'
 
 const duplicate = (a: any[], func: Function) => {
     const uniqueFields = new Set();
@@ -25,7 +26,7 @@ function generateRandomString(length: number): string {
     return randomString;
 }
 
-const fileToBase64 = (file: File, callback) => {
+const fileToBase64 = (file: File, callback: Function) => {
     if (window.FileReader) {
         let reader = new FileReader();
         reader.readAsDataURL(file);
@@ -34,7 +35,7 @@ const fileToBase64 = (file: File, callback) => {
             console.log(file)
             const response = new FileResource()
             response.file = file
-            response.hash = generateRandomString(20)
+            response.hash = String(crypto.SHA1(file))
             response.base64 = reader.result as string
             response.name = file.name
             response.length = file.size
@@ -71,11 +72,19 @@ function modifyHTML(html: string, fileMap: Map<String, FileResource>) {
         if (element.src.startsWith(host)) {
             let src = element.src.replace(host, "")
             const fileResource = fileMap.get(src)
-            element.src = fileResource?.base64 ?? ""
+            if (fileResource) {
+                element.src = fileResource.base64
+            }
         }
     }
     return tempDiv.innerHTML
 }
 
-
-export { duplicate, fileToBase64, generateRandomString, modifyHTML } 
+const toRouter = (e: { index: string; } | string) => {
+    if (typeof e == 'string') {
+        router.push(e)
+    } else {
+        router.push(e.index)
+    }
+}
+export { duplicate, fileToBase64, generateRandomString, modifyHTML, toRouter } 

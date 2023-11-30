@@ -118,7 +118,7 @@
 </style>
 <script lang="ts" setup>
 import { reactive, computed, ref, onMounted } from 'vue'
-import { roleReq, permissionReq } from "../common/axios"
+import { roleReq, permissionReq } from "../common/request"
 import { duplicate } from '../common/util';
 import { Role, Permission } from '../common/class';
 

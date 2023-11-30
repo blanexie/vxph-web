@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import { reactive, computed, ref, onMounted } from 'vue'
-import { permissionReq } from "../common/axios"
+import { permissionReq } from "../common/request"
 import { Permission } from "../common/class"
 
 const drawerData = ref<{

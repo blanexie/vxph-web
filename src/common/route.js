@@ -27,7 +27,15 @@ const routes = [
     },
     {
         path: '/post',
-        component: () => import('../views/post.vue')
+        component: () => import('../views/postList.vue')
+    },
+    {
+        path: '/postEdit',
+        component: () => import('../views/postEdit.vue')
+    },
+    {
+        path: '/postProview',
+        component: () => import('../views/postProview.vue')
     },
     {
         path: '/ddns',

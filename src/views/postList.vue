@@ -2,7 +2,7 @@
     <div class="card-div">
         <el-input v-model="tableData.keyword" class="keyword-class" placeholder="Please input" clearable />
         <el-button type="primary" @click="search">搜索</el-button>
-        <el-button type="primary" @click="search">新增</el-button>
+        <el-button type="primary" @click="toRouter('/postEdit')">新增</el-button>
     </div>
     <div class="card-div">
         <el-table :data="tableData?.content" :stripe="true" border :highlight-current-row="true" style="width: 100%"
@@ -12,20 +12,19 @@
             <el-table-column prop="coverImg" label="coverImg" />
             <el-table-column prop="markdown" label="markdown" />
             <el-table-column prop="owner" label="owner" />
-            <el-table-column prop="imgs" label="imgs" />
-            <el-table-column prop="torrents" label="torrents" />
             <el-table-column prop="remark" label="remark" />
-
-            <el-table-column prop="status" label="status" />
-            <el-table-column prop="updateTime" label="updateTime" />
             <el-table-column prop="createTime" label="createTime" />
+            <el-table-column label="operation">
+                <template #default="scope">
+                    <el-button link type="primary" size="small" @click.prevent=" ">
+                        修改
+                    </el-button>
+                    <el-button link type="primary" size="small" @click.prevent=" ">
+                        详情
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
-
-
-        <el-drawer v-model="drawerShow" title="帖子信息" @close="" size="900" direction="rtl">
-            <mkEdit></mkEdit>
-        </el-drawer>
-
     </div>
 </template>
 <style scoped>
@@ -43,9 +42,10 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
-import { postReq } from "../common/axios"
+import { postReq } from "../common/request"
 import { Post } from "../common/class"
-import mkEdit from '../components/mkEdit.vue';
+import mkEdit from './postEdit.vue';
+import { toRouter } from '../common/util';
 
 const drawerShow = ref(true)
 
