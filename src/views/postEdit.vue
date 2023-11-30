@@ -21,7 +21,6 @@
     <div class="card-div">
         <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"
             :toolbars="toolbars" />
-
     </div>
 </template>
 <style scoped >
@@ -51,9 +50,11 @@ import LabelSelect from '../components/labelSelect.vue'
 import { fileToBase64, modifyHTML } from '../common/util';
 import { fileResourceReq } from '../common/request'
 import { postReq } from '../common/request';
+import { objectToString } from '@vue/shared';
+import { it } from 'element-plus/es/locale';
 
 const props = defineProps(['modelValue'])
-const fileMap = reactive<Map<String, FileResource>>(new Map())
+const imgs: FileResource[] = []
 const markdownText = ref<string>("")
 const post = ref<Post>(new Post())
 
@@ -64,26 +65,32 @@ onMounted(() => {
 });
 
 //保存
-const savePost = () => {
+const savePost = async () => {
     const postData = post.value
     //0. 校验必填项目
     console.log("开发阶段，跳过必填项目", postData)
     //1. 上传FileResource 
-    fileMap.forEach((v: FileResource, k: String) => {
-        fileResourceReq.upload(v).then(resp => {
-            if (resp) {
-                fileMap.set(k, resp.data)
-            }
-        })
-    })
-    fileResourceReq.upload(postData.coverImg).then(resp => {
-        if (resp) {
-            postData.coverImg = resp.data
-        }
-    })
+    postData.imgs = imgs
+    const files = postData.imgs.concat(postData.coverImg)
+
+    // 按照发送顺序处理结果  
+    for (const resource of files) {
+        await fileResourceReq.upload(resource)
+            .then(resp => {
+                if (resp) {
+                    let data = resp.data
+                    resource.createTime = data.createTime
+                    resource.updateTime = data.updateTime
+                    resource.owner = data.owner
+                    resource.versionNo = data.versionNo
+                    resource.status = data.status
+                }
+            })
+    }
+
     //2. 保存post
     postData.markdown = markdownText.value
-    postReq.save(postData).then(resp => {
+    await postReq.save(postData).then(resp => {
         console.log("save post ", resp)
     })
 
@@ -96,25 +103,19 @@ const torrentInputChange = (element) => {
 }
 
 const onUploadImg = async (files, callback) => {
-    const res = await Promise.all(
-        files.map((file) => {
-            return new Promise((rev, rej) => {
-                fileToBase64(file, (it: FileResource) => {
-                    if (it.base64 != "") {
-                        fileMap.set(it.url, it)
-                        rev(it)
-                    } else {
-                        rej(it)
-                    }
-                })
-            });
+    for (const file of files) {
+        fileToBase64(file, (it: FileResource) => {
+            if (it.base64 != "") {
+                imgs.push(it)
+            }
         })
-    );
-    callback(res.map((item) => item.url));
+    }
+    let urls: string[] = imgs.map((it) => it.url)
+    callback(urls);
 };
 
 const sanitize = (html: string) => {
-    let rhtml = modifyHTML(html, fileMap)
+    let rhtml = modifyHTML(html, imgs)
     return rhtml
 }
 

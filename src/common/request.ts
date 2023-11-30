@@ -6,7 +6,7 @@ import router from './route.js'
 import { FileResource, Post } from './class'
 
 
-const baseServerURL = 'http://127.0.0.1:8018'
+const baseServerURL = 'http://192.168.1.6:8018'
 
 const instance = axios.create({
     baseURL: baseServerURL,

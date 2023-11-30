@@ -35,7 +35,7 @@ const fileToBase64 = (file: File, callback: Function) => {
             console.log(file)
             const response = new FileResource()
             response.file = file
-            response.hash = String(crypto.SHA1(file))
+            response.hash = generateRandomString(20)
             response.base64 = reader.result as string
             response.name = file.name
             response.length = file.size
@@ -62,7 +62,7 @@ function findHost() {
     return host
 }
 
-function modifyHTML(html: string, fileMap: Map<String, FileResource>) {
+function modifyHTML(html: string, files: FileResource[]) {
     const host = findHost()
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
@@ -71,8 +71,8 @@ function modifyHTML(html: string, fileMap: Map<String, FileResource>) {
         const element = imgs[index];
         if (element.src.startsWith(host)) {
             let src = element.src.replace(host, "")
-            const fileResource = fileMap.get(src)
-            if (fileResource) {
+            let fs = files.filter(it => it.url == src)
+            if (fs.length > 0) {
                 element.src = fileResource.base64
             }
         }

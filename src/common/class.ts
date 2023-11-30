@@ -53,8 +53,8 @@ class FileResource {
     length: Number
     file: File
     base64:string 
-    url:String
-    owner: User
+    url:string
+    owner: Number
     status: Number
     updateTime: string
     createTime: string
@@ -75,7 +75,7 @@ class Peer {
     event: String
     uploadTime: Date
     torrent: Torrent
-    user: User
+    user: Number
     status: Number
     updateTime: string
     createTime: string
@@ -97,8 +97,8 @@ class Post {
     id: Number
     title: String
     coverImg: FileResource
-    owner: User
-    imgs: FileResource[]
+    imgs:FileResource[]
+    owner: Number
     markdown: string
     torrents: File[]
     labels: Label[]
@@ -127,7 +127,7 @@ class Torrent {
     //downloaded – 曾经下载完成过的人数
     downloaded: Number
     peer: Peer[]
-    owner: User
+    owner: Number
     post: Post
 
     status: Number
