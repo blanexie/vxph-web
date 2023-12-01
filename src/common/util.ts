@@ -1,8 +1,7 @@
 
 import { FileResource } from "./class";
-import router from "../common/route"
 import crypto from 'crypto-js'
-
+import { baseServerURL } from '../common/request'
 const duplicate = (a: any[], func: Function) => {
     const uniqueFields = new Set();
     return [...a].filter(it => {
@@ -31,16 +30,15 @@ const fileToBase64 = (file: File, callback: Function) => {
         let reader = new FileReader();
         reader.readAsDataURL(file);
         // 转换成功
-        reader.onload = () => {
-            console.log(file)
+        reader.onload = (event) => {
             const response = new FileResource()
             response.file = file
-            response.hash = generateRandomString(20)
+            response.hash = String(crypto.SHA1(event.target.result))
             response.base64 = reader.result as string
             response.name = file.name
             response.length = file.size
             response.suffix = file.name.split('.').pop() ?? ""
-            response.url = "/api/resource/" + response.hash + "." + response.suffix
+            response.url = baseServerURL + "/api/resource/" + response.hash + "." + response.suffix
             callback(response)
         };
         // 转换失败
@@ -62,29 +60,24 @@ function findHost() {
     return host
 }
 
-function modifyHTML(html: string, files: FileResource[]) {
+function modifyHTML(html: string, files: Map<String, FileResource>) {
+    console.log("qqqqqq", files)
     const host = findHost()
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
     const imgs = tempDiv.getElementsByTagName('img');
     for (let index = 0; index < imgs.length; index++) {
         const element = imgs[index];
-        if (element.src.startsWith(host)) {
-            let src = element.src.replace(host, "")
-            let fs = files.filter(it => it.url == src)
-            if (fs.length > 0) {
-                element.src = fileResource.base64
-            }
+        let src = element.src
+        console.log("aaaaaaa", src)
+        let fs = files.get(src)
+        console.log("aaaassss", fs)
+        if (fs) {
+            element.src = fs.base64
         }
     }
     return tempDiv.innerHTML
 }
 
-const toRouter = (e: { index: string; } | string) => {
-    if (typeof e == 'string') {
-        router.push(e)
-    } else {
-        router.push(e.index)
-    }
-}
-export { duplicate, fileToBase64, generateRandomString, modifyHTML, toRouter } 
+
+export { duplicate, fileToBase64, generateRandomString, modifyHTML } 

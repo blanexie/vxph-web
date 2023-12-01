@@ -2,7 +2,7 @@
     <div class="card-div">
         <el-input v-model="tableData.keyword" class="keyword-class" placeholder="Please input" clearable />
         <el-button type="primary" @click="search">搜索</el-button>
-        <el-button type="primary" @click="toRouter('/postEdit')">新增</el-button>
+        <el-button type="primary" @click="$router.push('/postEdit')">新增</el-button>
     </div>
     <div class="card-div">
         <el-table :data="tableData?.content" :stripe="true" border :highlight-current-row="true" style="width: 100%"
@@ -44,10 +44,6 @@
 import { reactive, ref, onMounted } from 'vue'
 import { postReq } from "../common/request"
 import { Post } from "../common/class"
-import mkEdit from './postEdit.vue';
-import { toRouter } from '../common/util';
-
-const drawerShow = ref(true)
 
 const tableData = ref<{
     content: Post[],

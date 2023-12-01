@@ -60,7 +60,12 @@
 </style>
 <script lang="ts" setup>
 import { Document, Menu as IconMenu, Location, Setting, HomeFilled, } from "@element-plus/icons-vue";
-import { toRouter } from '../common/util'
+import { useRoute, useRouter } from "vue-router"
+const router = useRouter()
+
+const toRouter = (e: { index: string; }) => {
+    router.push(e.index)
+}
 
 const handleOpen = (key: string, keyPath: string[]) => {
 };

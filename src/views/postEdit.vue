@@ -1,26 +1,26 @@
 <template>
     <div class="card-div">
         <el-form :model="post" label-width="120px">
-            <el-form-item label="标题">
+            <el-form-item label="帖子标题：">
                 <el-input class="title" v-model="post.title" />
             </el-form-item>
-            <el-form-item label="封面">
+            <el-form-item label="帖子封面：">
                 <ImgSelect v-model="post.coverImg"></ImgSelect>
             </el-form-item>
-            <el-form-item label="分类和标签">
+            <el-form-item label="分类标签：">
                 <LabelSelect v-model="post.labels"></LabelSelect>
             </el-form-item>
-            <el-form-item label="Torrent">
+            <el-form-item label="Torrent：">
                 <input type="file" @change="torrentInputChange" />
             </el-form-item>
             <el-form-item>
+                <el-button type="primary" @click="test">test</el-button>
                 <el-button type="primary" @click="savePost">提交</el-button>
             </el-form-item>
         </el-form>
     </div>
     <div class="card-div">
-        <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"
-            :toolbars="toolbars" />
+        <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize" />
     </div>
 </template>
 <style scoped >
@@ -48,13 +48,11 @@ import { Post, FileResource } from '../common/class';
 import ImgSelect from '../components/ImgSelect.vue'
 import LabelSelect from '../components/labelSelect.vue'
 import { fileToBase64, modifyHTML } from '../common/util';
-import { fileResourceReq } from '../common/request'
-import { postReq } from '../common/request';
-import { objectToString } from '@vue/shared';
-import { it } from 'element-plus/es/locale';
-
+import { fileResourceReq, postReq, baseServerURL } from '../common/request'
+import { useRoute, useRouter } from "vue-router"
+const router = useRouter()
 const props = defineProps(['modelValue'])
-const imgs: FileResource[] = []
+const imgs: Map<String, FileResource> = new Map()
 const markdownText = ref<string>("")
 const post = ref<Post>(new Post())
 
@@ -64,13 +62,21 @@ onMounted(() => {
     markdownText.value = post.value.markdown
 });
 
+
+const test = () => {
+    router.push({
+        path: "/postProview",
+        query: { postId: '1' }
+    })
+}
+
 //保存
 const savePost = async () => {
     const postData = post.value
     //0. 校验必填项目
     console.log("开发阶段，跳过必填项目", postData)
     //1. 上传FileResource 
-    postData.imgs = imgs
+    postData.imgs = [...imgs.values()]
     const files = postData.imgs.concat(postData.coverImg)
 
     // 按照发送顺序处理结果  
@@ -102,19 +108,27 @@ const torrentInputChange = (element) => {
     post.value.torrents = element.target.files
 }
 
-const onUploadImg = async (files, callback) => {
-    for (const file of files) {
-        fileToBase64(file, (it: FileResource) => {
-            if (it.base64 != "") {
-                imgs.push(it)
-            }
+const onUploadImg = async (files: File[], callback) => {
+    const res = await Promise.all(
+        files.map(file => {
+            return new Promise((res, rej) => {
+                fileToBase64(file, (it: FileResource) => {
+                    if (it.base64 != "") {
+                        imgs.set(it.url, it)
+                        res(it)
+                    } else {
+                        rej(it)
+                    }
+                });
+            });
         })
-    }
-    let urls: string[] = imgs.map((it) => it.url)
-    callback(urls);
+    )
+    let rs = res as FileResource[]
+    callback(rs.map((item) => item.url));
 };
 
 const sanitize = (html: string) => {
+    console.log("sanitize", html)
     let rhtml = modifyHTML(html, imgs)
     return rhtml
 }
