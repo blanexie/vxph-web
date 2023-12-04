@@ -5,14 +5,24 @@
         <el-button type="primary" @click="$router.push('/postEdit')">新增</el-button>
     </div>
     <div class="card-div">
+        <div v-for="item in tableData?.content">
+            <PostItem :post="item"></PostItem>
+        </div>
+    </div>
+
+    <div class="card-div">
+
         <el-table :data="tableData?.content" :stripe="true" border :highlight-current-row="true" style="width: 100%"
             table-layout="auto">
             <el-table-column fixed prop="id" label="id" />
             <el-table-column prop="title" label="title" />
-            <el-table-column prop="coverImg" label="coverImg" />
-            <el-table-column prop="markdown" label="markdown" />
+            <el-table-column prop="coverImg.url" label="coverImg" />
+            <el-table-column label="labels">
+                <template #default="scope">
+                    <el-tag class="ml-2" v-for="item in  scope.row.labels" type="success">{{ item.name }}</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column prop="owner" label="owner" />
-            <el-table-column prop="remark" label="remark" />
             <el-table-column prop="createTime" label="createTime" />
             <el-table-column label="operation">
                 <template #default="scope">
@@ -44,6 +54,7 @@
 import { reactive, ref, onMounted } from 'vue'
 import { postReq } from "../common/request"
 import { Post } from "../common/class"
+import PostItem from '../components/PostItem.vue'
 
 const tableData = ref<{
     content: Post[],
@@ -62,12 +73,17 @@ const tableData = ref<{
 
 const search = () => {
     const tv = tableData.value
-    postReq.query({
+    const reqData = {
         page: tv.page, pageSize: tv.pageSize, keyword: tv.keyword
-    }).then(resp => {
-        console.log(resp)
+    }
+    postReq.query(reqData).then(resp => {
+        tv.content = resp.data.content
+        tv.totalPage = resp.data.totalPages
     })
 }
+onMounted(() => {
+    search()
+})
 
 </script>
   
