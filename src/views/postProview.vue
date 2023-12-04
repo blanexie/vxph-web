@@ -2,13 +2,15 @@
     <div class="card-div">
         <el-form :model="post" label-width="120px">
             <el-form-item label="帖子标题：">
-                <el-input class="title" v-model="post.title" />
+                <div class="title">{{ post.title }}</div>
             </el-form-item>
             <el-form-item label="帖子封面：">
-                <ImgSelect v-model="post.coverImg"></ImgSelect>
+                <el-image style="height: 200px" :src="serverUrl + '' + post.coverImg?.url" fit="fill" />
             </el-form-item>
             <el-form-item label="分类标签：">
-                <LabelSelect v-model="post.labels"></LabelSelect>
+                <el-tag v-for="item in post.labels" :key="item.id" size="large" class="tag">
+                    {{ item.name }}
+                </el-tag>
             </el-form-item>
             <el-form-item label="Torrent：">
                 <input type="file" />
@@ -23,6 +25,14 @@
 <style scoped >
 .card-div {
     min-width: 850px;
+}
+
+.title {
+    font-size: 17px;
+}
+
+.tag {
+    margin: 5px;
 }
 
 .edit {
@@ -44,18 +54,21 @@ import 'md-editor-v3/lib/style.css';
 import { Post, FileResource } from '../common/class';
 import { postReq } from '../common/request';
 import { useRoute, useRouter } from 'vue-router'
-import ImgSelect from '../components/ImgSelect.vue'
-import LabelSelect from '../components/labelSelect.vue'
+import { baseServerURL } from '../common/request';
 
+
+const serverUrl = ref("")
 const route = useRoute()
 
 const post = ref<Post>(new Post())
 const scrollElement = document.documentElement;
 
 onMounted(() => {
+    serverUrl.value = baseServerURL
     let postId = route.query.postId
     postReq.findById(postId).then(resp => {
         post.value = resp.data
+        console.log(post.value.coverImg.url)
     })
 });
 

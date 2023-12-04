@@ -1,7 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from './notification.js'
-import { FileResource, Post } from './class'
+import {FileResource, Post} from './class'
 
 
 const baseServerURL = 'http://127.0.0.1:8018'
@@ -18,7 +18,7 @@ instance.interceptors.response.use(
             Notification.error("权限不足", res.data.message)
         } else if (code == 403) {
             console.log("to login", res.data)
-            window.location.href="/login"
+            window.location.href = "/login"
         } else if (code == 200) {
             return res.data
         } else {
@@ -32,14 +32,14 @@ instance.interceptors.response.use(
 
 instance.interceptors.request.use((config) => {
     try {
-        const satoken = localStorage.getItem("satoken")
-        config.headers.satoken = satoken
+        config.headers.satoken = localStorage.getItem("satoken")
     } catch (e) {
     }
     return config;
 }, (error) => {
     // 对请求错误做些什么
-    return Promise.reject(error);
+    return Promise.reject(error)
+    //return Promise.reject(error);
 });
 
 const userReq = {
@@ -97,8 +97,8 @@ const postReq = {
     save: (post: Post) => {
         return instance.post("/api/post/save", post)
     },
-    findById: (id)=>{
-        return instance.get("/api/post/findById?id="+id)
+    findById: (id) => {
+        return instance.get("/api/post/findById?id=" + id)
     }
 }
 
@@ -108,16 +108,27 @@ const labelReq = {
     }
 }
 
-
 const fileResourceReq = {
     upload: async (fileResource: FileResource) => {
         let formData = new FormData();
         formData.append("hash", fileResource.hash);
         formData.append("file", fileResource.file);
         return instance.post("/api/resource/upload", formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: {'Content-Type': 'multipart/form-data'}
         })
     }
 }
 
-export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq }
+const torrentReq = {
+    upload: async (postId: string, torrent: File) => {
+        let formData = new FormData();
+        formData.append("postId", postId);
+        formData.append("file", torrent);
+        formData.append("title", torrent.name)
+        return instance.post("/api/torrent/upload", formData, {
+            headers: {'Content-Type': 'multipart/form-data'}
+        })
+    }
+}
+
+export {baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq, torrentReq}
