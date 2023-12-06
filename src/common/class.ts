@@ -100,7 +100,8 @@ class Post {
     imgs:FileResource[]
     owner: Number
     markdown: string
-    torrents: File[]
+    torrentFiles: File[]
+    torrents:Torrent[]
     labels: Label[]
     remark: string
     status: Number
@@ -121,11 +122,11 @@ class Torrent {
     pieceLength: Number
     singleFile: Boolean
     //complete – 目前做种人数
-    complete: Number
+    complete: number
     //incomplete – 目前正在下载人数
-    incomplete: Number
+    incomplete: number
     //downloaded – 曾经下载完成过的人数
-    downloaded: Number
+    downloaded: number
     peer: Peer[]
     owner: Number
     post: Post

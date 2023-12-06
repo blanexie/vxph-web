@@ -1,11 +1,12 @@
 <template>
     <div class="card-div">
-        <div>
-            <br>
-            <el-button type="primary" @click.prevent="addRoleDrawerShow">
-                新增角色
-            </el-button>
-        </div>
+
+        <br>
+        <el-button type="primary" @click.prevent="addRoleDrawerShow">
+            新增角色
+        </el-button>
+    </div>
+    <div class="card-div">
         <br>
         <el-table :data="tableData" :stripe="true" border :highlight-current-row="true" style="width: 100%"
             table-layout="auto">

@@ -2,13 +2,14 @@
     <div class="card-div">
         <el-form :model="post" label-width="120px">
             <el-form-item label="帖子标题：">
-                <div class="title">{{ post.title }}</div>
+                <div class="title">{{ post?.title }}</div>
             </el-form-item>
             <el-form-item label="帖子封面：">
-                <el-image style="height: 200px" :src="serverUrl + '' + post.coverImg?.url" fit="fill" />
+                <p>{{ post?.coverImg?.url }}</p>
+                <vx-image :imgurl="post?.coverImg?.url" style="height: 200px" fit="fill"></vx-image>
             </el-form-item>
             <el-form-item label="分类标签：">
-                <el-tag v-for="item in post.labels" :key="item.id" size="large" class="tag">
+                <el-tag v-for="item in post?.labels" :key="item.id" size="large" class="tag">
                     {{ item.name }}
                 </el-tag>
             </el-form-item>
@@ -18,7 +19,7 @@
         </el-form>
     </div>
     <div class="card-div">
-        <MdPreview class="edit" :modelValue="post.markdown" />
+        <MdPreview class="edit" :modelValue="post?.markdown" />
         <MdCatalog :scrollElement="scrollElement" />
     </div>
 </template>
@@ -54,22 +55,18 @@ import 'md-editor-v3/lib/style.css';
 import { Post, FileResource } from '../common/class';
 import { postReq } from '../common/request';
 import { useRoute, useRouter } from 'vue-router'
-import { baseServerURL } from '../common/request';
+import VxImage from '../components/VxImage.vue';
 
-
-const serverUrl = ref("")
 const route = useRoute()
-
-const post = ref<Post>(new Post())
+const post = ref<Post>()
 const scrollElement = document.documentElement;
 
-onMounted(() => {
-    serverUrl.value = baseServerURL
+const init = () => {
     let postId = route.query.postId
     postReq.findById(postId).then(resp => {
         post.value = resp.data
-        console.log(post.value.coverImg.url)
     })
-});
+}
+init();
 
 </script>

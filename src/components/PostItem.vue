@@ -4,9 +4,21 @@
             <el-image :src="props.post.coverImg.url"></el-image>
         </div>
         <div class="right">
-            <div class="title">{{ props.post.title }}</div>
-            <div>{{ props.post.coverImg.url }}</div>
-            <div>3</div>
+            <div class="title">
+                {{ props.post.title }} &nbsp;&nbsp;&nbsp;
+                <el-tag v-for="tag in props.post.labels" type="success">{{ tag.name }}</el-tag>
+                <span class="createTime">
+                    {{ props.post?.createTime }}
+                </span>
+            </div>
+            <div>
+                <el-tag v-for="t in props.post.torrents">{{ t.title }}</el-tag>
+            </div>
+            <div>
+                {{ complete }} &nbsp;
+                {{ incomplete }} &nbsp;
+                {{ downloaded }} &nbsp;
+            </div>
         </div>
     </div>
 </template>
@@ -38,17 +50,32 @@
     line-height: 25px;
     margin-bottom: 4px;
 }
+
+.createTime {
+    font-size: 12px;
+}
 </style>
 <script lang="ts" setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import { Post } from '../common/class';
 import { baseServerURL } from '../common/request';
+
+const complete = ref(0)
+const incomplete = ref(0)
+const downloaded = ref(0)
+
 const props = defineProps(['post'])
 onMounted(() => {
+    const post = props.post as Post
     const coverImg = props.post.coverImg
     if (coverImg.url.startsWith("/")) {
         coverImg.url = baseServerURL + "" + coverImg.url
     }
-    console.log(props.post)
+    complete.value = post.torrents.map(it => it.complete).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    incomplete.value = post.torrents.map(it => it.incomplete).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    downloaded.value = post.torrents.map(it => it.downloaded).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    console.log(complete, incomplete, downloaded)
 })
 
 </script>

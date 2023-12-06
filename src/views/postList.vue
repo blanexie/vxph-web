@@ -55,6 +55,7 @@ import { reactive, ref, onMounted } from 'vue'
 import { postReq } from "../common/request"
 import { Post } from "../common/class"
 import PostItem from '../components/PostItem.vue'
+import { isYieldExpression } from '@babel/types';
 
 const tableData = ref<{
     content: Post[],
@@ -77,8 +78,14 @@ const search = () => {
         page: tv.page, pageSize: tv.pageSize, keyword: tv.keyword
     }
     postReq.query(reqData).then(resp => {
-        tv.content = resp.data.content
-        tv.totalPage = resp.data.totalPages
+        tv.content = resp.data.postPage.content
+        tv.totalPage = resp.data.postPage.totalPages
+        const torrents = resp.data.torrents
+
+        tv.content.forEach(it => {
+            it.torrents = torrents.filter(t => t.postId == it.id)
+            console.log(it)
+        })
     })
 }
 onMounted(() => {

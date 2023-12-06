@@ -1,6 +1,6 @@
 <template>
     <el-affix position="top" :offset="2">
-        <el-menu active-text-color="#ffd04b" background-color="#545c64" mode="horizontal" class="el-menu-vertical-demo"
+        <el-menu active-text-color="#ffd04b" background-color="#74759b" mode="horizontal" class="el-menu-vertical-demo"
             default-active="1" text-color="#fff" @open="handleOpen" @close="handleClose">
             <el-menu-item @click="toRouter" index="/home">
                 <el-icon>

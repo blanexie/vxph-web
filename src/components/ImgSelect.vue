@@ -1,20 +1,22 @@
 <template>
   <div>
     <p v-if="coverImg.show" class="imgshow">
-      <el-image class="coverClass" v-if="coverImg.src != ''" :src="coverImg.src" fit="fill"/> &nbsp;&nbsp;
+      <VxImage v-if="coverImg.src != ''" fit="fill" class="coverClass" :src="coverImg.src">
+      </VxImage>
+      <!-- <el-image class="coverClass" v-if="coverImg.src != ''" :src="coverImg.src" fit="fill"/> &nbsp;&nbsp; -->
     </p>
     <div class="input-file-button" v-if="coverImg.src == ''" @click="divClick">
       <div class="ccc">
         <el-icon class="plus">
-          <Plus/>
+          <Plus />
         </el-icon>
         <div>添加封面图片</div>
       </div>
 
     </div>
     <input type="file" ref="inputs" @change="handleCoverImg" id="imgSelect_upload" accept="image/*"
-           class="input-select"/>&nbsp;
-    <el-tag v-if="coverImg.name !=''" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
+      class="input-select" />&nbsp;
+    <el-tag v-if="coverImg.name != ''" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
   </div>
 </template>
 <style scoped>
@@ -52,12 +54,14 @@
 }
 </style>
 <script lang="ts" setup>
-import {reactive, ref, onMounted} from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import Notification from '../common/notification'
-import {fileToBase64} from '@/common/util';
-import {baseServerURL} from '@/common/request'
-import {FileResource} from '@/common/class';
-import {Plus, Close} from '@element-plus/icons-vue'
+import { fileToBase64 } from '@/common/util';
+import { baseServerURL } from '@/common/request'
+import { FileResource } from '@/common/class';
+import { Plus, Close } from '@element-plus/icons-vue'
+import VxImage from './VxImage.vue';
+
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -65,7 +69,7 @@ const emit = defineEmits(['update:modelValue'])
 onMounted(() => {
   const modelValue: FileResource = props.modelValue
   if (modelValue) {
-    coverImg.src = baseServerURL + "/" + modelValue.hash + "." + modelValue.suffix
+    coverImg.src = "/" + modelValue.hash + "." + modelValue.suffix
   }
 });
 

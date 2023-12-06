@@ -13,7 +13,7 @@
       <el-form-item label="Torrent：">
         <label class="input-file-button" for="upload"> 选择Torrent文件 </label>
         <input type="file" id="upload" @change="torrentInputChange"/> &nbsp;
-        <el-tag v-for="item in post.torrents" @close="tagClose" closable :key="item.name">{{ item.name }}</el-tag>
+        <el-tag v-for="item in post.torrentFiles" @close="tagClose" closable :key="item.name">{{ item.name }}</el-tag>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="test">test</el-button>
@@ -88,7 +88,7 @@ const test = () => {
   })
 }
 const tagClose = (e) => {
-  post.value.torrents = []
+  post.value.torrentFiles = []
 }
 
 //保存
@@ -131,19 +131,18 @@ const savePost = async () => {
   await postReq.save(postData).then(resp => {
     if (resp) {
       post.value = resp.data
-      post.value.torrents = postData.torrents
+      post.value.torrentFiles = postData.torrentFiles
     }
   })
-  console.log("aaaa", post.value)
   //3. 上传保存torrent
-  await torrentReq.upload(post.value.id + "", postData.torrents[0])
+  await torrentReq.upload(post.value.id + "", postData.torrentFiles[0])
       .then(resp => {
         console.log(resp)
       })
 }
 
 const torrentInputChange = (element) => {
-  post.value.torrents = element.target.files
+  post.value.torrentFiles = element.target.files
 }
 
 const onUploadImg = async (files: File[], callback) => {
