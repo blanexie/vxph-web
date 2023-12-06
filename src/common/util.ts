@@ -52,26 +52,14 @@ const fileToBase64 = (file: File, callback: Function) => {
     }
 }
 
-function findHost() {
-    let currentUrl = window.location.href;
-    let cu = currentUrl.split('://')
-    let urlPrefix = cu[1].split('/')[0];
-    let host = cu[0] + "://" + urlPrefix
-    return host
-}
-
 function modifyHTML(html: string, files: Map<String, FileResource>) {
-    console.log("qqqqqq", files)
-    const host = findHost()
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
     const imgs = tempDiv.getElementsByTagName('img');
     for (let index = 0; index < imgs.length; index++) {
         const element = imgs[index];
         let src = element.src
-        console.log("aaaaaaa", src)
         let fs = files.get(src)
-        console.log("aaaassss", fs)
         if (fs) {
             element.src = fs.base64
         }
@@ -80,4 +68,26 @@ function modifyHTML(html: string, files: Map<String, FileResource>) {
 }
 
 
-export { duplicate, fileToBase64, generateRandomString, modifyHTML } 
+function parseImgUrl(url: string | undefined) {
+    let src = ''
+    if (url) {
+        if (url.startsWith("http") || url.startsWith("//")) {
+            src = url
+        } else if (url.startsWith("/")) {
+            src = baseServerURL + "" + url
+        } else if (url.startsWith("data:")) {
+            src = url
+        } else {
+            throw Error("无法识别的图片链接地址")
+        }
+        const satoken = localStorage.getItem("satoken")
+        if (src.includes("?")) {
+            src = src + "&satoken=" + satoken
+        } else {
+            src = src + "?satoken=" + satoken
+        }
+    }
+    return src
+}
+
+export { duplicate, fileToBase64, generateRandomString, modifyHTML, parseImgUrl } 

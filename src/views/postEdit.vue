@@ -59,8 +59,8 @@
 import 'md-editor-v3/lib/style.css';
 import {onMounted, ref} from 'vue';
 import {MdEditor} from 'md-editor-v3';
-import ImgSelect from '../components/ImgSelect.vue'
-import LabelSelect from '../components/labelSelect.vue'
+import ImgSelect from '@/components/ImgSelect.vue'
+import LabelSelect from '@/components/labelSelect.vue'
 import {FileResource, Post} from '@/common/class';
 import {fileToBase64, modifyHTML} from '@/common/util';
 import {fileResourceReq, postReq, torrentReq} from '@/common/request'

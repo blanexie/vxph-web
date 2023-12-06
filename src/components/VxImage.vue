@@ -2,32 +2,20 @@
     <el-image :src="src"></el-image>
 </template>
 <script lang="ts" setup>
-import { onMounted, ref, toRefs } from 'vue';
-import { baseServerURL } from '../common/request';
-import { stringLiteral } from '@babel/types';
+import { onMounted, watch, ref, toRefs } from 'vue';
+import { parseImgUrl } from '../common/util';
+const emit = defineEmits(['update:url'])
+const props = defineProps(['url'])
+const src = ref()
 
-const props = defineProps(['src'])
-const { src } = toRefs(props)
+const init = () => {
+    const url = props.url as string
+    src.value = parseImgUrl(url)
+}
 
-onMounted(() => {
-    const satoken = localStorage.getItem("satoken")
-    const url = src?.value
-    console.log(url)
-    if (url) {
-        if (url.startsWith("http") || url.startsWith("//")) {
-            src.value = url
-        } else if (url.startsWith("/")) {
-            src.value = baseServerURL + "" + url
-        } else if (url.startsWith("data:")) {
-            src.value = url
-        } else {
-            throw Error("无法识别的图片链接地址")
-        }
-        if (src.value.includes("?")) {
-            src.value = src.value + "&satoken=" + satoken
-        } else {
-            src.value = src.value + "?satoken=" + satoken
-        }
-    }
+watch(props, (nweProps) => {
+    init()
 })
+
+onMounted(init)
 </script>

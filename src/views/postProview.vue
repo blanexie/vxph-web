@@ -5,8 +5,7 @@
                 <div class="title">{{ post?.title }}</div>
             </el-form-item>
             <el-form-item label="帖子封面：">
-                <p>{{ post?.coverImg?.url }}</p>
-                <vx-image :imgurl="post?.coverImg?.url" style="height: 200px" fit="fill"></vx-image>
+                <vx-image v-model:url="img" style="height: 200px" fit="fill"></vx-image>
             </el-form-item>
             <el-form-item label="分类标签：">
                 <el-tag v-for="item in post?.labels" :key="item.id" size="large" class="tag">
@@ -36,10 +35,6 @@
     margin: 5px;
 }
 
-.edit {
-    max-width: 1080px;
-}
-
 .title {
     width: 560px;
 }
@@ -58,15 +53,15 @@ import { useRoute, useRouter } from 'vue-router'
 import VxImage from '../components/VxImage.vue';
 
 const route = useRoute()
-const post = ref<Post>()
+const post = ref<Post>(new Post())
 const scrollElement = document.documentElement;
-
-const init = () => {
+const img = ref()
+onMounted(() => {
     let postId = route.query.postId
     postReq.findById(postId).then(resp => {
         post.value = resp.data
+        img.value = resp.data.coverImg.url
     })
-}
-init();
+})
 
 </script>
