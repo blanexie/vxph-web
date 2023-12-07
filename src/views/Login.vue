@@ -19,10 +19,10 @@
 <style scoped></style>
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
-import {userReq} from '@/common/request';
-import Notification from "@/common/notification";
-import router from "@/common/route";
-import {TokenInfo} from '@/common/class';
+import {userReq} from '../common/request';
+import Notification from "../common/notification";
+import router from "../common/route";
+import {TokenInfo} from '../common/class';
 
 const passwordRule = {
   required: true,

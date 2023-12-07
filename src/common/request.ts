@@ -1,7 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from './notification.js'
-import {FileResource, Post, Role, TokenInfo} from './class'
+import { FileResource, Post, Role, TokenInfo } from './class'
 
 
 const baseServerURL = 'http://127.0.0.1:8018'
@@ -31,8 +31,9 @@ instance.interceptors.response.use(
 
 instance.interceptors.request.use(
     (config) => {
-        const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo")) as TokenInfo
-        if (tokenInfo) {
+        const token = localStorage.getItem("tokenInfo")
+        if (token) {
+            const tokenInfo = JSON.parse(token) as TokenInfo
             config.headers[tokenInfo.tokenName] = tokenInfo.tokenValue
         }
         return config;
@@ -113,7 +114,7 @@ const fileResourceReq = {
         formData.append("hash", fileResource.hash);
         formData.append("file", fileResource.file);
         return instance.post("/api/resource/upload", formData, {
-            headers: {'Content-Type': 'multipart/form-data'}
+            headers: { 'Content-Type': 'multipart/form-data' }
         })
     }
 }
@@ -125,9 +126,17 @@ const torrentReq = {
         formData.append("file", torrent);
         formData.append("title", torrent.name)
         return instance.post("/api/torrent/upload", formData, {
-            headers: {'Content-Type': 'multipart/form-data'}
+            headers: { 'Content-Type': 'multipart/form-data' }
         })
     }
 }
 
-export {baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq, torrentReq}
+
+const codeReq = {
+    findType: (code: string) => {
+        return instance.get("/api/code/type?code=" + code)
+    }
+}
+
+
+export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq, torrentReq,codeReq }

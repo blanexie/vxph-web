@@ -2,22 +2,20 @@
   <div class="card-div">
     <el-form :model="post" label-width="120px">
       <el-form-item label="帖子标题：">
-        <el-input class="title" v-model="post.title"/>
+        <el-input class="title" v-model="post.title" />
       </el-form-item>
       <el-form-item label="帖子封面：">
         <img-select v-model="post.coverImg"></img-select>
       </el-form-item>
       <el-form-item label="帖子分类：">
-        <LabelSelect v-model="post.labels"></LabelSelect>
+        <PostType v-model="post.type"></PostType>
       </el-form-item>
-
       <el-form-item label="帖子标签：">
         <LabelSelect v-model="post.labels"></LabelSelect>
       </el-form-item>
-
       <el-form-item label="Torrent：">
         <label class="input-file-button" for="upload"> 选择Torrent文件 </label>
-        <input type="file" id="upload" @change="torrentInputChange"/> &nbsp;
+        <input type="file" id="upload" @change="torrentInputChange" /> &nbsp;
         <el-tag v-for="item in post.torrentFiles" @close="tagClose" closable :key="item.name">{{ item.name }}</el-tag>
       </el-form-item>
 
@@ -28,7 +26,7 @@
     </el-form>
   </div>
   <div class="card-div">
-    <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"/>
+    <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize" />
   </div>
 </template>
 <style scoped>
@@ -63,14 +61,15 @@
 </style>
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css';
-import {onMounted, ref} from 'vue';
-import {MdEditor} from 'md-editor-v3';
-import ImgSelect from '@/components/ImgSelect.vue'
-import LabelSelect from '@/components/labelSelect.vue'
-import {FileResource, Post} from '@/common/class';
-import {fileToBase64, modifyHTML} from '@/common/util';
-import {fileResourceReq, postReq, torrentReq} from '@/common/request'
-import {useRouter} from "vue-router"
+import { onMounted, ref } from 'vue';
+import { MdEditor } from 'md-editor-v3';
+import ImgSelect from "../components/ImgSelect.vue"
+import LabelSelect from '../components/labelSelect.vue'
+import PostType from '../components/PostType.vue'
+import { FileResource, Post } from '../common/class';
+import { fileToBase64, modifyHTML } from '../common/util';
+import { fileResourceReq, postReq, torrentReq } from '../common/request'
+import { useRouter } from "vue-router"
 import Notification from "../common/notification"
 
 
@@ -90,7 +89,7 @@ onMounted(() => {
 const test = () => {
   router.push({
     path: "/postProview",
-    query: {postId: '1'}
+    query: { postId: '1' }
   })
 }
 const tagClose = (e) => {
@@ -120,16 +119,16 @@ const savePost = async () => {
   // 按照发送顺序处理结果
   for (const resource of files) {
     await fileResourceReq.upload(resource)
-        .then(resp => {
-          if (resp) {
-            let data = resp.data
-            resource.createTime = data.createTime
-            resource.updateTime = data.updateTime
-            resource.owner = data.owner
-            resource.versionNo = data.versionNo
-            resource.status = data.status
-          }
-        })
+      .then(resp => {
+        if (resp) {
+          let data = resp.data
+          resource.createTime = data.createTime
+          resource.updateTime = data.updateTime
+          resource.owner = data.owner
+          resource.versionNo = data.versionNo
+          resource.status = data.status
+        }
+      })
   }
 
   //2. 保存post
@@ -142,9 +141,9 @@ const savePost = async () => {
   })
   //3. 上传保存torrent
   await torrentReq.upload(post.value.id + "", postData.torrentFiles[0])
-      .then(resp => {
-        console.log(resp)
-      })
+    .then(resp => {
+      console.log(resp)
+    })
 }
 
 const torrentInputChange = (element) => {
@@ -153,18 +152,18 @@ const torrentInputChange = (element) => {
 
 const onUploadImg = async (files: File[], callback) => {
   const res = await Promise.all(
-      files.map(file => {
-        return new Promise((res, rej) => {
-          fileToBase64(file, (it: FileResource) => {
-            if (it.base64 != "") {
-              imgs.set(it.url, it)
-              res(it)
-            } else {
-              rej(it)
-            }
-          });
+    files.map(file => {
+      return new Promise((res, rej) => {
+        fileToBase64(file, (it: FileResource) => {
+          if (it.base64 != "") {
+            imgs.set(it.url, it)
+            res(it)
+          } else {
+            rej(it)
+          }
         });
-      })
+      });
+    })
   )
   let rs = res as FileResource[]
   callback(rs.map((item) => item.url));

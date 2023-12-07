@@ -1,70 +1,71 @@
 <template>
-    <div class="card-div">
-        <el-form :model="post" label-width="120px">
-            <el-form-item label="帖子标题：">
-                <div class="title">{{ post?.title }}</div>
-            </el-form-item>
-            <el-form-item label="帖子封面：">
-                <vx-image v-model:url="img" style="height: 200px" fit="fill"></vx-image>
-            </el-form-item>
-            <el-form-item label="帖子分类：">
-                <el-tag> {{ post.type }}</el-tag>
-            </el-form-item>
-            <el-form-item label="帖子标签：">
-                <el-tag v-for="item in post?.labels" :key="item.id" size="large" class="tag">
-                    {{ item.name }}
-                </el-tag>
-            </el-form-item>
-            <el-form-item label="Torrent：">
-                <input type="file" />
-            </el-form-item>
-        </el-form>
-    </div>
-    <div class="card-div">
-        <MdPreview class="edit" :modelValue="post?.markdown" />
-        <MdCatalog :scrollElement="scrollElement" />
-    </div>
+  <div class="card-div">
+    <el-form :model="post" label-width="120px">
+      <el-form-item label="帖子标题：">
+        <div class="title">{{ post?.title }}</div>
+      </el-form-item>
+      <el-form-item label="帖子封面：">
+        <vx-image v-model:url="img" style="height: 150px;" fit="fill"></vx-image>
+      </el-form-item>
+      <el-form-item label="帖子分类：">
+        <el-tag> {{ post.type }}</el-tag>
+      </el-form-item>
+      <el-form-item label="帖子标签：">
+        <el-tag v-for="item in post?.labels" :key="item.id" size="large" class="tag">
+          {{ item.name }}
+        </el-tag>
+      </el-form-item>
+      <el-form-item label="Torrent：">
+        <input type="file" />
+      </el-form-item>
+    </el-form>
+  </div>
+  <div class="card-div">
+    <MdPreview class="edit" :modelValue="post?.markdown" />
+    <MdCatalog :scrollElement="scrollElement" />
+  </div>
 </template>
-<style scoped >
+<style scoped>
 .card-div {
-    min-width: 850px;
+  min-width: 850px;
 }
 
 .title {
-    font-size: 17px;
+  text-align: left;
+  font-size: 17px;
 }
 
 .tag {
-    margin: 5px;
+  margin: 5px;
 }
 
 .title {
-    width: 560px;
+  width: 560px;
 }
 
 .coverClass {
-    height: 150px;
+  height: 150px;
 }
 </style>
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import { Post, FileResource } from '../common/class';
+import { Post } from '../common/class';
 import { postReq } from '../common/request';
 import { useRoute, useRouter } from 'vue-router'
-import VxImage from '../components/VxImage.vue';
+import VxImage from "../components/VxImage.vue"
 
 const route = useRoute()
 const post = ref<Post>(new Post())
 const scrollElement = document.documentElement;
 const img = ref()
 onMounted(() => {
-    let postId = route.query.postId
-    postReq.findById(postId).then(resp => {
-        post.value = resp.data
-        img.value = resp.data.coverImg.url
-    })
+  let postId = route.query.postId
+  postReq.findById(postId).then(resp => {
+    post.value = resp.data
+    img.value = resp.data.coverImg.url
+  })
 })
 
 </script>

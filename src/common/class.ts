@@ -1,7 +1,7 @@
 class User {
     id: Number
-    name: String
-    email: String
+    name: string
+    email: string
 }
 
 
@@ -48,8 +48,8 @@ class Record {
 
 class FileResource {
     hash: string
-    name: String
-    suffix: String  //文件的后缀，同时也是表示文件的类型，
+    name: string
+    suffix: string  //文件的后缀，同时也是表示文件的类型，
     length: Number
     file: File
     base64: string
@@ -63,16 +63,16 @@ class FileResource {
 
 class Peer {
     id: Number
-    infoHash: String
-    passKey: String
-    peerId: String
-    ipv4: String
-    ipv6: String
+    infoHash: string
+    passKey: string
+    peerId: string
+    ipv4: string
+    ipv6: string
     port: Number
     downloaded: Number
     left: Number
     uploaded: Number
-    event: String
+    event: string
     uploadTime: Date
     torrent: Torrent
     user: Number
@@ -84,9 +84,9 @@ class Peer {
 
 class Label {
     id: Number
-    code: String
-    name: String
-    type: String
+    code: string
+    name: string
+    type: string
     status: Number
     updateTime: string
     createTime: string
@@ -95,7 +95,7 @@ class Label {
 
 class Post {
     id: Number
-    title: String
+    title: string
     coverImg: FileResource
     imgs: FileResource[]
     owner: Number
@@ -112,14 +112,14 @@ class Post {
 }
 
 class Torrent {
-    infoHash: String
-    title: String  //用户命名的
-    name: String  //torrent中的名称
+    infoHash: string
+    title: string  //用户命名的
+    name: string  //torrent中的名称
     length: Number
-    comment: String    // torrent中的注释
-    files: String
+    comment: string    // torrent中的注释
+    files: string
     creationDate: Number  //秒时间戳
-    createdBy: String
+    createdBy: string
     pieceLength: Number
     singleFile: Boolean
     //complete – 目前做种人数
@@ -139,24 +139,17 @@ class Torrent {
 }
 
 class TokenInfo {
-
-    constructor(public tokenName: string,
-                public tokenValue: string,
-                public isLogin: boolean,
-                public loginId: string,
-                public loginType: string,
-                public tokenTimeout: string,
-                public sessionTimeout: string,
-                public tokenSessionTimeout: string,
-                public tokenActiveTimeout: string,
-                public loginDevice: string,
-                public tag: any) {
-    }
-
-    public getUrlParam(): string {
-        return this.tokenName + "=" + this.tokenValue
-    }
-
+    tokenName: string
+    tokenValue: string
+    isLogin: boolean
+    loginId: string
+    loginType: string
+    tokenTimeout: string
+    sessionTimeout: string
+    tokenSessionTimeout: string
+    tokenActiveTimeout: string
+    loginDevice: string
+    tag: any
 }
 
 export {Permission, Role, Record, Post, Torrent, FileResource, Peer, Label, TokenInfo}

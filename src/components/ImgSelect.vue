@@ -2,7 +2,8 @@
   <div>
     <p v-if="coverImg.show" class="imgshow">
       <vx-image fit="fill" class="coverClass" :src="coverImg.src"></vx-image>
-      <el-tag @close="tagClose" closable>{{ coverImg.name }}</el-tag>
+
+      <el-tag class="coverTag" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
     </p>
 
     <div class="input-file-button" v-if="!coverImg.show" @click="divClick">
@@ -20,6 +21,30 @@
   </div>
 </template>
 <style scoped>
+.imgshow {
+  cursor: pointer;
+  position: relative;
+  height: 150px;
+  width: 243px;
+}
+
+.coverTag:hover {
+  position: absolute;
+  left: 49%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 1
+}
+
+.coverTag {
+  position: absolute;
+  left: 49%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.05
+}
+
+
 .input-file-button {
   padding: 9px 8px;
   border-radius: 4px;
@@ -52,11 +77,12 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
-import Notification from '@/common/notification'
-import { fileToBase64 } from '@/common/util';
-import { FileResource } from '@/common/class';
+import Notification from '../common/notification'
+import { fileToBase64 } from '../common/util';
+import { FileResource } from '../common/class';
 import { Plus } from '@element-plus/icons-vue'
 import VxImage from './VxImage.vue';
+import { fileResourceReq } from '../common/request';
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -78,9 +104,9 @@ const coverImg = reactive<{ show: Boolean, src: string, name: string }>({
 const inputs = ref(null)
 
 const divClick = () => {
-  inputs.value?.click();
+  const ins = inputs.value as any
+  ins.click()
 }
-
 const tagClose = (e) => {
   coverImg.src = ''
   coverImg.show = false
@@ -90,14 +116,15 @@ const tagClose = (e) => {
 
 const handleCoverImg = (element) => {
   const files = element.target.files
-  fileToBase64(files[0], (resp: FileResource) => {
-    if (resp.base64 != "") {
+  fileToBase64(files[0], (resp: { status: boolean, data: any }) => {
+    if (resp.status) {
+      const fileResource = resp.data as FileResource
       coverImg.show = true
-      coverImg.src = resp.base64
-      coverImg.name = resp.name
-      emit('update:modelValue', resp)
+      coverImg.src = fileResource.base64
+      coverImg.name = fileResource.name
+      emit('update:modelValue', fileResource)
     } else {
-      Notification.error("", "封面选择失败，请重新选择")
+      Notification.error("解析图片失败", resp.data)
     }
   })
 }

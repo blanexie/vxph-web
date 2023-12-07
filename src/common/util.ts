@@ -1,6 +1,6 @@
-import {FileResource, TokenInfo} from "./class";
+import { FileResource, TokenInfo } from "./class";
 import crypto from 'crypto-js'
-import {baseServerURL} from './request'
+import { baseServerURL } from './request'
 
 const duplicate = (a: any[], func: Function) => {
     const uniqueFields = new Set();
@@ -20,7 +20,7 @@ const fileToBase64 = (file: File, callback: Function) => {
         reader.readAsDataURL(file);
         // 转换成功
         reader.onload = (event) => {
-            const base64Str = event.target.result as string
+            const base64Str = event.target?.result as string
             const fileResource = new FileResource()
             fileResource.file = file
             fileResource.hash = String(crypto.SHA1(base64Str))
@@ -59,21 +59,28 @@ function modifyHTML(html: string, files: Map<String, FileResource>) {
     return tempDiv.innerHTML
 }
 
-function parseImgUrl(url: string | undefined) {
+function parseImgUrl(url: string | undefined): string {
+    const token = localStorage.getItem("tokenInfo")
     let src = ''
-    if (url) {
-        const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo")) as TokenInfo
+    if (url && token) {
+        const tokenInfo = JSON.parse(token) as TokenInfo
         if (url.startsWith("http") || url.startsWith("//")) {
-            src = url + "&" + tokenInfo.getUrlParam()
+            src = url
         } else if (url.startsWith("/")) {
-            src = baseServerURL + url + "&" + tokenInfo.getUrlParam()
+            src = baseServerURL + url
         } else if (url.startsWith("data:")) {
             src = url
+            return src
         } else {
             throw Error("无法识别的图片链接地址")
+        }
+        if (src.includes("?")) {
+            src = src + "&" + tokenInfo.tokenName + "=" + tokenInfo.tokenValue
+        } else {
+            src = src + "?" + tokenInfo.tokenName + "=" + tokenInfo.tokenValue
         }
     }
     return src
 }
 
-export {duplicate, fileToBase64, modifyHTML, parseImgUrl}
+export { duplicate, fileToBase64, modifyHTML, parseImgUrl }
