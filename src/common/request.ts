@@ -1,7 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
 import Notification from './notification.js'
-import {FileResource, Post} from './class'
+import {FileResource, Post, Role, TokenInfo} from './class'
 
 
 const baseServerURL = 'http://127.0.0.1:8018'
@@ -12,38 +12,37 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use(
-    (res) => {
-        let code = res.data.code
+    (resp) => {
+        let code = resp.data.code
         if (code === 625) {
-            Notification.error("权限不足", res.data.message)
+            Notification.error("权限不足", resp.data.message)
         } else if (code == 403) {
-            console.log("to login", res.data)
             window.location.href = "/login"
         } else if (code == 200) {
-            return res.data
+            return resp.data
         } else {
-            Notification.error("异常" + code, res.data.message)
+            Notification.error("异常" + code, resp.data.message)
         }
     },
     (error) => {
         return Promise.reject(error);
     }
-)
+);
 
-instance.interceptors.request.use((config) => {
-    try {
-        config.headers.satoken = localStorage.getItem("satoken")
-    } catch (e) {
+instance.interceptors.request.use(
+    (config) => {
+        const tokenInfo = JSON.parse(localStorage.getItem("tokenInfo")) as TokenInfo
+        if (tokenInfo) {
+            config.headers[tokenInfo.tokenName] = tokenInfo.tokenValue
+        }
+        return config;
+    }, (error) => {
+        return Promise.reject(error)
     }
-    return config;
-}, (error) => {
-    // 对请求错误做些什么
-    return Promise.reject(error)
-    //return Promise.reject(error);
-});
+);
 
 const userReq = {
-    login: (userName, password) => {
+    login: (userName: string, password: string) => {
         const timestamp = Date.now();
         const sign = String(crypto.SHA256(userName + "" + password + "" + timestamp))
         return instance.post("/api/user/login", {
@@ -75,29 +74,29 @@ const roleReq = {
     roleList: () => {
         return instance.get("/api/role/list")
     },
-    save: (role) => {
+    save: (role: Role) => {
         return instance.post("/api/role/save", role)
     },
-    delete: (roleCode) => {
+    delete: (roleCode: string) => {
         return instance.get("/api/role/delete?roleCode=" + roleCode)
     },
 
 }
 
 const permissionReq = {
-    list: (data) => {
+    list: (data: any) => {
         return instance.post("/api/permission/query", data)
     }
 }
 
 const postReq = {
-    query: (data) => {
+    query: (data: any) => {
         return instance.post("/api/post/query", data)
     },
     save: (post: Post) => {
         return instance.post("/api/post/save", post)
     },
-    findById: (id) => {
+    findById: (id: any) => {
         return instance.get("/api/post/findById?id=" + id)
     }
 }

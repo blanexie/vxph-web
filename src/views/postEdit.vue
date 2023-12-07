@@ -5,16 +5,22 @@
         <el-input class="title" v-model="post.title"/>
       </el-form-item>
       <el-form-item label="帖子封面：">
-        <ImgSelect v-model="post.coverImg"></ImgSelect>
+        <img-select v-model="post.coverImg"></img-select>
       </el-form-item>
-      <el-form-item label="分类标签：">
+      <el-form-item label="帖子分类：">
         <LabelSelect v-model="post.labels"></LabelSelect>
       </el-form-item>
+
+      <el-form-item label="帖子标签：">
+        <LabelSelect v-model="post.labels"></LabelSelect>
+      </el-form-item>
+
       <el-form-item label="Torrent：">
         <label class="input-file-button" for="upload"> 选择Torrent文件 </label>
         <input type="file" id="upload" @change="torrentInputChange"/> &nbsp;
         <el-tag v-for="item in post.torrentFiles" @close="tagClose" closable :key="item.name">{{ item.name }}</el-tag>
       </el-form-item>
+
       <el-form-item>
         <el-button type="primary" @click="test">test</el-button>
         <el-button type="primary" @click="savePost">发布</el-button>

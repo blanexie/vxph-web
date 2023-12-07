@@ -4,7 +4,6 @@
 <script lang="ts" setup>
 import { onMounted, watch, ref, toRefs } from 'vue';
 import { parseImgUrl } from '../common/util';
-const emit = defineEmits(['update:url'])
 const props = defineProps(['url'])
 const src = ref()
 

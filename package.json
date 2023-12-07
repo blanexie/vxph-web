@@ -21,6 +21,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@types/crypto-js": "^4.2.1",
     "@vitejs/plugin-vue": "^4.4.0",
+    "typescript": "^5.3.3",
     "vite": "^4.4.11"
   }
 }

@@ -7,7 +7,10 @@
             <el-form-item label="帖子封面：">
                 <vx-image v-model:url="img" style="height: 200px" fit="fill"></vx-image>
             </el-form-item>
-            <el-form-item label="分类标签：">
+            <el-form-item label="帖子分类：">
+                <el-tag> {{ post.type }}</el-tag>
+            </el-form-item>
+            <el-form-item label="帖子标签：">
                 <el-tag v-for="item in post?.labels" :key="item.id" size="large" class="tag">
                     {{ item.name }}
                 </el-tag>

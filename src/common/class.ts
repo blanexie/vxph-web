@@ -52,8 +52,8 @@ class FileResource {
     suffix: String  //文件的后缀，同时也是表示文件的类型，
     length: Number
     file: File
-    base64:string 
-    url:string
+    base64: string
+    url: string
     owner: Number
     status: Number
     updateTime: string
@@ -97,11 +97,12 @@ class Post {
     id: Number
     title: String
     coverImg: FileResource
-    imgs:FileResource[]
+    imgs: FileResource[]
     owner: Number
     markdown: string
     torrentFiles: File[]
-    torrents:Torrent[]
+    torrents: Torrent[]
+    type: string
     labels: Label[]
     remark: string
     status: Number
@@ -137,5 +138,25 @@ class Torrent {
     versionNo: Number
 }
 
+class TokenInfo {
 
-export { Permission, Role, Record, Post, Torrent, FileResource, Peer, Label }
+    constructor(public tokenName: string,
+                public tokenValue: string,
+                public isLogin: boolean,
+                public loginId: string,
+                public loginType: string,
+                public tokenTimeout: string,
+                public sessionTimeout: string,
+                public tokenSessionTimeout: string,
+                public tokenActiveTimeout: string,
+                public loginDevice: string,
+                public tag: any) {
+    }
+
+    public getUrlParam(): string {
+        return this.tokenName + "=" + this.tokenValue
+    }
+
+}
+
+export {Permission, Role, Record, Post, Torrent, FileResource, Peer, Label, TokenInfo}

@@ -75,8 +75,8 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
-import { ddnsReq } from "../common/request"
-import {Record} from "../common/class"
+import { ddnsReq } from "@/common/request"
+import {Record} from "@/common/class"
 
 const drawerData = ref<{
     rowData: Record,

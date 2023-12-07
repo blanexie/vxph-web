@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 
 import { onMounted, watch, ref, toRefs } from 'vue';
-import { baseServerURL } from '../common/request';
+import { baseServerURL } from '@/common/request';
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import {fileToBase64, modifyHTML} from '@/common/util';
 import 'md-editor-v3/lib/style.css';

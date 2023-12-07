@@ -1,22 +1,22 @@
 <template>
   <div>
     <p v-if="coverImg.show" class="imgshow">
-      <VxImage v-if="coverImg.src != ''" fit="fill" class="coverClass" :src="coverImg.src">
-      </VxImage>
-      <!-- <el-image class="coverClass" v-if="coverImg.src != ''" :src="coverImg.src" fit="fill"/> &nbsp;&nbsp; -->
+      <vx-image fit="fill" class="coverClass" :src="coverImg.src"></vx-image>
+      <el-tag @close="tagClose" closable>{{ coverImg.name }}</el-tag>
     </p>
-    <div class="input-file-button" v-if="coverImg.src == ''" @click="divClick">
+
+    <div class="input-file-button" v-if="!coverImg.show" @click="divClick">
       <div class="ccc">
         <el-icon class="plus">
           <Plus />
         </el-icon>
         <div>添加封面图片</div>
       </div>
-
     </div>
-    <input type="file" ref="inputs" @change="handleCoverImg" id="imgSelect_upload" accept="image/*"
-      class="input-select" />&nbsp;
-    <el-tag v-if="coverImg.name != ''" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
+
+    <input type="file" ref="inputs" @change="handleCoverImg" style="display: none;" accept="image/*"
+      class="input-select" />
+
   </div>
 </template>
 <style scoped>
@@ -43,9 +43,6 @@
   color: #606266;
 }
 
-#imgSelect_upload {
-  display: none;
-}
 
 .coverClass {
   width: 243px;
@@ -55,13 +52,11 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
-import Notification from '../common/notification'
+import Notification from '@/common/notification'
 import { fileToBase64 } from '@/common/util';
-import { baseServerURL } from '@/common/request'
 import { FileResource } from '@/common/class';
-import { Plus, Close } from '@element-plus/icons-vue'
+import { Plus } from '@element-plus/icons-vue'
 import VxImage from './VxImage.vue';
-
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -69,6 +64,7 @@ const emit = defineEmits(['update:modelValue'])
 onMounted(() => {
   const modelValue: FileResource = props.modelValue
   if (modelValue) {
+    coverImg.show = true
     coverImg.src = "/" + modelValue.hash + "." + modelValue.suffix
   }
 });
@@ -78,9 +74,11 @@ const coverImg = reactive<{ show: Boolean, src: string, name: string }>({
   src: '',
   name: ''
 })
+
 const inputs = ref(null)
+
 const divClick = () => {
-  inputs.value.click();
+  inputs.value?.click();
 }
 
 const tagClose = (e) => {
