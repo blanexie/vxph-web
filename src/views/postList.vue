@@ -43,12 +43,6 @@
     width: 400px;
 }
 
-.card-div {
-    margin-bottom: 10px;
-    padding: 20px;
-    border-radius: px;
-    background-color: #ffffff;
-}
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'

@@ -19,10 +19,10 @@
 <style scoped></style>
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
-import {userReq} from '../common/request';
-import Notification from "../common/notification";
-import router from "../common/route";
-import {TokenInfo} from '../common/class';
+import {userReq} from '@/common/request';
+import router from '@/common/route';
+import {TokenInfo} from '@/common/class';
+import {ElNotification} from "element-plus";
 
 const passwordRule = {
   required: true,
@@ -52,7 +52,7 @@ const submitForm = (userInfo: UserInfo) => {
   userReq.login(userInfo.nickName, userInfo.password).then((resp: any) => {
     let code = resp.code
     if (code != 200) {
-      Notification.error("登录失败", code + " ; " + resp.message)
+      ElNotification.error({title: "登录失败", message: code + " ; " + resp.message})
     } else {
       const data = resp.data as TokenInfo
       console.log(data)

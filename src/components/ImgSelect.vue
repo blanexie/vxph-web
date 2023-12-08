@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="coverImg.show" class="imgshow">
+    <p v-if="coverImg.show" class="imgShow">
       <vx-image fit="fill" class="coverClass" :src="coverImg.src"></vx-image>
 
       <el-tag class="coverTag" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
@@ -9,19 +9,19 @@
     <div class="input-file-button" v-if="!coverImg.show" @click="divClick">
       <div class="ccc">
         <el-icon class="plus">
-          <Plus />
+          <Plus/>
         </el-icon>
         <div>添加封面图片</div>
       </div>
     </div>
 
     <input type="file" ref="inputs" @change="handleCoverImg" style="display: none;" accept="image/*"
-      class="input-select" />
+           class="input-select"/>
 
   </div>
 </template>
 <style scoped>
-.imgshow {
+.imgShow {
   cursor: pointer;
   position: relative;
   height: 150px;
@@ -76,13 +76,14 @@
 }
 </style>
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue';
-import Notification from '../common/notification'
-import { fileToBase64 } from '../common/util';
-import { FileResource } from '../common/class';
-import { Plus } from '@element-plus/icons-vue'
+import {reactive, ref, onMounted} from 'vue';
+import {fileToBase64} from '@/common/util';
+import {FileResource} from '@/common/class';
+import {Plus} from '@element-plus/icons-vue'
 import VxImage from './VxImage.vue';
-import { fileResourceReq } from '../common/request';
+
+import {ElNotification} from 'element-plus'
+
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -107,26 +108,30 @@ const divClick = () => {
   const ins = inputs.value as any
   ins.click()
 }
-const tagClose = (e) => {
+const tagClose = () => {
   coverImg.src = ''
   coverImg.show = false
   coverImg.name = ''
   emit('update:modelValue', null)
 }
 
-const handleCoverImg = (element) => {
+const handleCoverImg = (element: any) => {
   const files = element.target.files
-  fileToBase64(files[0], (resp: { status: boolean, data: any }) => {
-    if (resp.status) {
-      const fileResource = resp.data as FileResource
-      coverImg.show = true
-      coverImg.src = fileResource.base64
-      coverImg.name = fileResource.name
-      emit('update:modelValue', fileResource)
-    } else {
-      Notification.error("解析图片失败", resp.data)
-    }
-  })
+  fileToBase64(files[0])
+      .then((resp: any) => {
+        const fileResource = resp as FileResource
+        coverImg.show = true
+        coverImg.src = fileResource.base64
+        coverImg.name = fileResource.name
+        emit('update:modelValue', resp)
+      })
+      .catch((resp: string) => {
+        ElNotification.error({
+          message: resp,
+          title: "解析图片失败"
+        })
+      })
+
 }
 
 

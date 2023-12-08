@@ -64,12 +64,6 @@
     </div>
 </template>
 <style scoped>
-.card-div {
-    margin-bottom: 10px;
-    padding: 20px;
-    border-radius: px;
-    background-color: #ffffff;
-}
 
 
 </style>

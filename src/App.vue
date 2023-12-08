@@ -4,7 +4,7 @@
       <el-header>
         <Menu></Menu>
       </el-header>
-      <el-main class>
+      <el-main>
           <RouterView></RouterView>
       </el-main>
     </el-container>
@@ -15,13 +15,11 @@
   background-color: #f2f4f7;
 }
 .el-main{
-  width: 1200px;
-  text-align: center;
+  width: 1024px;
   margin: auto;
   min-height: 100vh;
-
 }
 </style>
 <script lang="ts" setup>
-import Menu from './components/menu.vue'
+import Menu from './components/Menu.vue'
 </script>

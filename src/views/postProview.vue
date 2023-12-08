@@ -16,20 +16,16 @@
         </el-tag>
       </el-form-item>
       <el-form-item label="Torrent：">
-        <input type="file" />
+        <input type="file"/>
       </el-form-item>
     </el-form>
   </div>
   <div class="card-div">
-    <MdPreview class="edit" :modelValue="post?.markdown" />
-    <MdCatalog :scrollElement="scrollElement" />
+    <MdPreview class="edit" :modelValue="post?.markdown"/>
+    <MdCatalog :scrollElement="scrollElement"/>
   </div>
 </template>
 <style scoped>
-.card-div {
-  min-width: 850px;
-}
-
 .title {
   text-align: left;
   font-size: 17px;
@@ -43,18 +39,16 @@
   width: 560px;
 }
 
-.coverClass {
-  height: 150px;
-}
+
 </style>
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
-import { MdPreview, MdCatalog } from 'md-editor-v3';
+import {ref, onMounted} from 'vue';
+import {MdPreview, MdCatalog} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-import { Post } from '../common/class';
-import { postReq } from '../common/request';
-import { useRoute, useRouter } from 'vue-router'
-import VxImage from "../components/VxImage.vue"
+import {Post} from '@/common/class';
+import {postReq} from '@/common/request';
+import {useRoute, useRouter} from 'vue-router'
+import VxImage from "@/components/VxImage.vue"
 
 const route = useRoute()
 const post = ref<Post>(new Post())
@@ -62,10 +56,9 @@ const scrollElement = document.documentElement;
 const img = ref()
 onMounted(() => {
   let postId = route.query.postId
-  postReq.findById(postId).then(resp => {
+  postReq.findById(postId).then((resp: any) => {
     post.value = resp.data
     img.value = resp.data.coverImg.url
   })
 })
-
 </script>

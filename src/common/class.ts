@@ -4,7 +4,6 @@ class User {
     email: string
 }
 
-
 class Permission {
     code: string
     name: string
@@ -15,7 +14,6 @@ class Permission {
     updateTime: string
     versionNo: Number
 }
-
 
 class Role {
     id: number
@@ -28,7 +26,6 @@ class Role {
     updateTime: string
     versionNo: Number
 }
-
 
 class Record {
     id: number
@@ -100,7 +97,6 @@ class Post {
     imgs: FileResource[]
     owner: Number
     markdown: string
-    torrentFiles: File[]
     torrents: Torrent[]
     type: string
     labels: Label[]

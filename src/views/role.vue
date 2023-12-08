@@ -109,13 +109,6 @@
 .w-50 {
     width: 450px;
 }
-
-.card-div {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: px;
-    background-color: #ffffff;
-}
 </style>
 <script lang="ts" setup>
 import { reactive, computed, ref, onMounted } from 'vue'

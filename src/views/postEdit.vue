@@ -2,7 +2,7 @@
   <div class="card-div">
     <el-form :model="post" label-width="120px">
       <el-form-item label="帖子标题：">
-        <el-input class="title" v-model="post.title" />
+        <el-input class="title" v-model="post.title"/>
       </el-form-item>
       <el-form-item label="帖子封面：">
         <img-select v-model="post.coverImg"></img-select>
@@ -14,167 +14,158 @@
         <LabelSelect v-model="post.labels"></LabelSelect>
       </el-form-item>
       <el-form-item label="Torrent：">
-        <label class="input-file-button" for="upload"> 选择Torrent文件 </label>
-        <input type="file" id="upload" @change="torrentInputChange" /> &nbsp;
-        <el-tag v-for="item in post.torrentFiles" @close="tagClose" closable :key="item.name">{{ item.name }}</el-tag>
+        <el-upload ref="uploadRef" class="upload" v-model:file-list="torrents" :on-exceed="handleExceed" :limit="1"
+                   :auto-upload="false">
+          <template #trigger>
+            <el-button type="primary">选择文件</el-button>
+          </template>
+        </el-upload>
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="test">test</el-button>
+        <el-button type="primary" @click="">test</el-button>
         <el-button type="primary" @click="savePost">发布</el-button>
       </el-form-item>
     </el-form>
   </div>
   <div class="card-div">
-    <MdEditor class="edit" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize" />
+    <MdEditor class="edit" :toolbars="toolbars" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"/>
+  </div>
+
+  <div>
+    <Progress v-model="progress.per" v-model:show="progress.show"></Progress>
   </div>
 </template>
 <style scoped>
-.input-file-button {
-  padding: 2px 10px;
-  background: #409eff;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
-
-#upload {
-  display: none;
-}
-
-
-.card-div {
-  min-width: 850px;
-}
-
-.edit {
-  max-width: 1080px;
-}
-
 .title {
   width: 560px;
 }
 
-.coverClass {
-  height: 150px;
+.upload {
+  width: 850px;
+}
+
+.edit {
+  max-width: 1024px;
 }
 </style>
 <script lang="ts" setup>
 import 'md-editor-v3/lib/style.css';
-import { onMounted, ref } from 'vue';
-import { MdEditor } from 'md-editor-v3';
-import ImgSelect from "../components/ImgSelect.vue"
-import LabelSelect from '../components/labelSelect.vue'
-import PostType from '../components/PostType.vue'
-import { FileResource, Post } from '../common/class';
-import { fileToBase64, modifyHTML } from '../common/util';
-import { fileResourceReq, postReq, torrentReq } from '../common/request'
-import { useRouter } from "vue-router"
-import Notification from "../common/notification"
+import {onMounted, reactive, ref} from 'vue';
+import {MdEditor, ToolbarNames} from 'md-editor-v3';
+import ImgSelect from "@/components/ImgSelect.vue"
+import LabelSelect from '@/components/LabelSelect.vue'
+import PostType from '@/components/PostType.vue'
+import Progress from '@/components/Progress.vue'
+import {FileResource, Post} from '@/common/class';
+import {fileToBase64, modifyHTML} from '@/common/util';
+import {fileResourceReq, postReq, torrentReq} from '@/common/request'
+import {ElNotification, UploadUserFile} from "element-plus";
+import {genFileId} from 'element-plus'
+import type {UploadInstance, UploadProps, UploadRawFile} from 'element-plus'
 
 
-const router = useRouter()
-const props = defineProps(['modelValue'])
-const imgs: Map<String, FileResource> = new Map()
+const progress = reactive<{ per: number, show: boolean }>({per: 0, show: false})
+const imgMap: Map<String, FileResource> = new Map()
 const markdownText = ref<string>("")
 const post = ref<Post>(new Post())
 
+const torrents = ref<UploadUserFile[]>()
+const uploadRef = ref<UploadInstance>()
+
 onMounted(() => {
   // 初始化
-  post.value = (props.modelValue as Post) ?? new Post()
-  markdownText.value = post.value.markdown
 });
 
-
-const test = () => {
-  router.push({
-    path: "/postProview",
-    query: { postId: '1' }
-  })
-}
-const tagClose = (e) => {
-  post.value.torrentFiles = []
+const handleExceed: UploadProps['onExceed'] = (files) => {
+  uploadRef.value!.clearFiles()
+  const file = files[0] as UploadRawFile
+  file.uid = genFileId()
+  uploadRef.value!.handleStart(file)
 }
 
 //保存
 const savePost = async () => {
   const postData = post.value
-  console.log(postData.title)
   //0. 校验必填项目
   //标题校验
   if (postData.title == '' || postData.title == undefined) {
-    Notification.error("必填", "标题必填")
+    ElNotification.error({title: "必填", message: "标题必填"})
     return
   }
   //封面校验
-  if (postData.coverImg == null || postData.coverImg.base64 == '') {
-    Notification.error("必填", "封面图片必填")
+  if (postData.coverImg.base64 == '') {
+    ElNotification.error({title: "必填", message: "封面图片必填"})
     return
   }
-  console.log("开发阶段，跳过必填项目", postData)
+  //torrent校验
+  if (torrents.value?.length == 0) {
+    ElNotification.error({title: "必填", message: "torrent文件必填"})
+    return
+  }
+  progress.show = true
+  progress.per = 30
   //1. 上传FileResource
-  postData.imgs = [...imgs.values()]
-  const files = postData.imgs.concat(postData.coverImg)
-
+  postData.imgs = [...imgMap.values()]
+  const files = [postData.coverImg, ...postData.imgs]
+  progress.per = 40
   // 按照发送顺序处理结果
   for (const resource of files) {
     await fileResourceReq.upload(resource)
-      .then(resp => {
-        if (resp) {
-          let data = resp.data
-          resource.createTime = data.createTime
-          resource.updateTime = data.updateTime
-          resource.owner = data.owner
-          resource.versionNo = data.versionNo
-          resource.status = data.status
-        }
-      })
+        .then(resp => {
+          if (resp) {
+            let data = resp.data
+            resource.createTime = data.createTime
+            resource.updateTime = data.updateTime
+            resource.owner = data.owner
+            resource.versionNo = data.versionNo
+            resource.status = data.status
+          }
+        })
   }
-
+  progress.per = 60
   //2. 保存post
   postData.markdown = markdownText.value
   await postReq.save(postData).then(resp => {
     if (resp) {
       post.value = resp.data
-      post.value.torrentFiles = postData.torrentFiles
     }
   })
+  progress.per = 70
   //3. 上传保存torrent
-  await torrentReq.upload(post.value.id + "", postData.torrentFiles[0])
-    .then(resp => {
-      console.log(resp)
-    })
+  for (let torrent of torrents.value!) {
+    await torrentReq.upload(post.value.id + "", torrent.raw!)
+        .then(resp => {
+          console.log(resp)
+        })
+  }
+  progress.per = 90
+  progress.per = 100
 }
 
-const torrentInputChange = (element) => {
-  post.value.torrentFiles = element.target.files
-}
-
-const onUploadImg = async (files: File[], callback) => {
+const onUploadImg = async (files: File[], callback: Function) => {
   const res = await Promise.all(
-    files.map(file => {
-      return new Promise((res, rej) => {
-        fileToBase64(file, (it: FileResource) => {
-          if (it.base64 != "") {
-            imgs.set(it.url, it)
-            res(it)
-          } else {
-            rej(it)
-          }
-        });
-      });
-    })
+      files.map(file => fileToBase64(file))
   )
-  let rs = res as FileResource[]
-  callback(rs.map((item) => item.url));
+  const urls = res.map(it => {
+    if (it instanceof FileResource) {
+      imgMap.set(it.url, it)
+      return it
+    } else {
+      return undefined
+    }
+  }).filter(it => it).map(it => it!.url)
+  callback(urls);
 };
 
-const sanitize = (html: string) => {
-  console.log("sanitize", html)
-  return modifyHTML(html, imgs)
+const sanitize = (html: string): string => {
+  console.log("sanitize before", html, imgMap)
+  const rhtml = modifyHTML(html, imgMap)
+  console.log("sanitize after", rhtml, imgMap)
+  return rhtml
 }
 
-const toolbars = ref([
+const toolbars = ref<ToolbarNames[]>([
   'bold',
   'underline',
   'italic',

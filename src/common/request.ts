@@ -1,7 +1,7 @@
 import axios from 'axios'
 import crypto from 'crypto-js'
-import Notification from './notification.js'
-import { FileResource, Post, Role, TokenInfo } from './class'
+import {FileResource, Post, Role, TokenInfo} from './class'
+import {ElNotification} from "element-plus";
 
 
 const baseServerURL = 'http://127.0.0.1:8018'
@@ -15,13 +15,13 @@ instance.interceptors.response.use(
     (resp) => {
         let code = resp.data.code
         if (code === 625) {
-            Notification.error("权限不足", resp.data.message)
+            ElNotification.error({title: "权限不足", message: resp.data.message})
         } else if (code == 403) {
             window.location.href = "/login"
         } else if (code == 200) {
             return resp.data
         } else {
-            Notification.error("异常" + code, resp.data.message)
+            ElNotification.error({title: "异常" + code, message: resp.data.message})
         }
     },
     (error) => {
@@ -114,7 +114,7 @@ const fileResourceReq = {
         formData.append("hash", fileResource.hash);
         formData.append("file", fileResource.file);
         return instance.post("/api/resource/upload", formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: {'Content-Type': 'multipart/form-data'}
         })
     }
 }
@@ -126,7 +126,7 @@ const torrentReq = {
         formData.append("file", torrent);
         formData.append("title", torrent.name)
         return instance.post("/api/torrent/upload", formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: {'Content-Type': 'multipart/form-data'}
         })
     }
 }
@@ -139,4 +139,15 @@ const codeReq = {
 }
 
 
-export { baseServerURL, userReq, ddnsReq, roleReq, permissionReq, postReq, labelReq, fileResourceReq, torrentReq,codeReq }
+export {
+    baseServerURL,
+    userReq,
+    ddnsReq,
+    roleReq,
+    permissionReq,
+    postReq,
+    labelReq,
+    fileResourceReq,
+    torrentReq,
+    codeReq
+}

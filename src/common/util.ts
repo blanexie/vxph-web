@@ -1,6 +1,6 @@
-import { FileResource, TokenInfo } from "./class";
+import {FileResource, TokenInfo} from "./class";
 import crypto from 'crypto-js'
-import { baseServerURL } from './request'
+import {baseServerURL} from './request'
 
 const duplicate = (a: any[], func: Function) => {
     const uniqueFields = new Set();
@@ -14,10 +14,17 @@ const duplicate = (a: any[], func: Function) => {
     })
 }
 
-const fileToBase64 = (file: File, callback: Function) => {
-    if (window.FileReader) {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
+function getHostPrefix(): string {
+    const fullUrl = window.location.href; // 获取当前页面的完整URL
+    const protocolIndex = fullUrl.indexOf('//'); // 查找协议的位置
+    const prefixIndex = fullUrl.indexOf('/', protocolIndex + 2); // 查找主机前缀的位置
+    return fullUrl.substring(0, prefixIndex); // 返回主机前缀的子字符串
+}
+
+const fileToBase64 = (file: File): Promise<FileResource | string> => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    return new Promise((resolve, reject) => {
         // 转换成功
         reader.onload = (event) => {
             const base64Str = event.target?.result as string
@@ -29,20 +36,13 @@ const fileToBase64 = (file: File, callback: Function) => {
             fileResource.length = file.size
             fileResource.suffix = file.name.split('.').pop() ?? ""
             fileResource.url = "/api/resource/" + fileResource.hash + "." + fileResource.suffix
-            callback({
-                status: true,
-                data: fileResource
-            })
+            resolve(fileResource)
         };
         // 转换失败
-        reader.onerror = function () {
-            const response = {
-                status: false,
-                data: reader.error
-            }
-            callback(response);
+        reader.onerror = function (event) {
+            reject(event.target?.result)
         };
-    }
+    })
 }
 
 function modifyHTML(html: string, files: Map<String, FileResource>) {
@@ -51,6 +51,10 @@ function modifyHTML(html: string, files: Map<String, FileResource>) {
     const elements = tempDiv.getElementsByTagName('img');
     for (let element of elements) {
         let src = element.src
+        const hostPrefix = getHostPrefix()
+        if (src.startsWith(hostPrefix)) {
+            src = src.replace(hostPrefix, "")
+        }
         let fs = files.get(src)
         if (fs) {
             element.src = fs.base64
@@ -83,4 +87,4 @@ function parseImgUrl(url: string | undefined): string {
     return src
 }
 
-export { duplicate, fileToBase64, modifyHTML, parseImgUrl }
+export {duplicate, fileToBase64, modifyHTML, parseImgUrl}

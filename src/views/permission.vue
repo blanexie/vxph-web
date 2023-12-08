@@ -51,12 +51,7 @@
     </div>
 </template>
 <style scoped>
-.card-div {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: px;
-    background-color: #ffffff;
-}
+
 </style>
 
 <script lang="ts" setup>
