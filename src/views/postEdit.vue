@@ -2,7 +2,7 @@
   <div class="card-div">
     <el-form :model="post" label-width="120px">
       <el-form-item label="帖子标题：">
-        <el-input class="title" v-model="post.title"/>
+        <el-input class="title" v-model="post.title"/>  <el-button type="primary" @click="savePost">发布</el-button>
       </el-form-item>
       <el-form-item label="帖子封面：">
         <img-select v-model="post.coverImg"></img-select>
@@ -21,14 +21,8 @@
           </template>
         </el-upload>
       </el-form-item>
-
-      <el-form-item>
-        <el-button type="primary" @click="">test</el-button>
-        <el-button type="primary" @click="savePost">发布</el-button>
-      </el-form-item>
     </el-form>
-  </div>
-  <div class="card-div">
+
     <MdEditor class="edit" :toolbars="toolbars" v-model="markdownText" @onUploadImg="onUploadImg" :sanitize="sanitize"/>
   </div>
 
@@ -63,7 +57,9 @@ import {fileResourceReq, postReq, torrentReq} from '@/common/request'
 import {ElNotification, UploadUserFile} from "element-plus";
 import {genFileId} from 'element-plus'
 import type {UploadInstance, UploadProps, UploadRawFile} from 'element-plus'
+import {useRouter} from 'vue-router'
 
+const router = useRouter()
 
 const progress = reactive<{ per: number, show: boolean }>({per: 0, show: false})
 const imgMap: Map<String, FileResource> = new Map()
@@ -72,6 +68,7 @@ const post = ref<Post>(new Post())
 
 const torrents = ref<UploadUserFile[]>()
 const uploadRef = ref<UploadInstance>()
+
 
 onMounted(() => {
   // 初始化
@@ -141,6 +138,8 @@ const savePost = async () => {
   }
   progress.per = 90
   progress.per = 100
+
+  await router.push("/postProview?postId=" + post.value.id)
 }
 
 const onUploadImg = async (files: File[], callback: Function) => {
