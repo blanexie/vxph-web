@@ -65,7 +65,7 @@ const ddnsReq = {
     findDomainRecords: function () {
         return instance.get("/api/ddns/findRecords")
     },
-    updateRecord: function (rowdata) {
+    updateRecord: function (rowdata: any) {
         return instance.post("/api/ddns/updateRecord", rowdata)
     }
 
@@ -81,6 +81,12 @@ const roleReq = {
     delete: (roleCode: string) => {
         return instance.get("/api/role/delete?roleCode=" + roleCode)
     },
+    findByCode(code: any) {
+        return instance.get("/api/role/findByCode?code=" + code)
+    },
+    findPermissionByCode(roleCode: any) {
+        return instance.get("/api/role/findPermissions?roleCode=" + roleCode)
+    }
 
 }
 

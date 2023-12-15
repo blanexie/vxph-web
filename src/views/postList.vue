@@ -49,7 +49,6 @@ import { reactive, ref, onMounted } from 'vue'
 import { postReq } from "../common/request"
 import { Post } from "../common/class"
 import PostItem from '../components/PostItem.vue'
-import { isYieldExpression } from '@babel/types';
 
 const tableData = ref<{
     content: Post[],

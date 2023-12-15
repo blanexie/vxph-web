@@ -1,151 +1,151 @@
 class User {
-    id: Number
-    name: string
-    email: string
+    id: Number | undefined
+    name: string | undefined
+    email: string | undefined
 }
 
 class Permission {
-    code: string
-    name: string
-    description: string
-    type: string
-    status: number
-    createTime: string
-    updateTime: string
-    versionNo: Number
+    code: string | undefined
+    name: string | undefined
+    description: string | undefined
+    type: string | undefined
+    status: number | undefined
+    createTime: string | undefined
+    updateTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Role {
-    id: number
-    code: string
-    name: string
-    description: string
-    permissions: Permission[]
-    status: number
-    createTime: string
-    updateTime: string
-    versionNo: Number
+    id: number | undefined
+    code: string | undefined
+    name: string | undefined
+    description: string | undefined
+    permissions: Permission[] | undefined
+    status: number | undefined
+    createTime: string | undefined
+    updateTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Record {
-    id: number
-    recordId: string
-    domainName: string
-    rr: string
-    type: string
-    value: string
-    ttl: string
-    remark: string
-    versionNo: Number
-    status: Number
-    updateTime: string
-    createTime: string
+    id: number | undefined
+    recordId: string | undefined
+    domainName: string | undefined
+    rr: string | undefined
+    type: string | undefined
+    value: string | undefined
+    ttl: string | undefined
+    remark: string | undefined
+    versionNo: Number | undefined
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
 
 }
 
 class FileResource {
-    hash: string
-    name: string
-    suffix: string  //文件的后缀，同时也是表示文件的类型，
-    length: Number
-    file: File
-    base64: string
-    url: string
-    owner: Number
-    status: Number
-    updateTime: string
-    createTime: string
-    versionNo: Number
+    hash: string | undefined
+    name: string | undefined
+    suffix: string | undefined //文件的后缀，同时也是表示文件的类型，
+    length: Number | undefined
+    file: File | undefined
+    base64: string | undefined
+    url: string | undefined
+    owner: Number | undefined
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Peer {
-    id: Number
-    infoHash: string
-    passKey: string
-    peerId: string
-    ipv4: string
-    ipv6: string
-    port: Number
-    downloaded: Number
-    left: Number
-    uploaded: Number
-    event: string
-    uploadTime: Date
-    torrent: Torrent
-    user: Number
-    status: Number
-    updateTime: string
-    createTime: string
-    versionNo: Number
+    id: Number | undefined
+    infoHash: string | undefined
+    passKey: string | undefined
+    peerId: string | undefined
+    ipv4: string | undefined
+    ipv6: string | undefined
+    port: Number | undefined
+    downloaded: Number | undefined
+    left: Number | undefined
+    uploaded: Number | undefined
+    event: string | undefined
+    uploadTime: Date | undefined
+    torrent: Torrent | undefined
+    user: Number | undefined
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Label {
-    id: Number
-    code: string
-    name: string
-    type: string
-    status: Number
-    updateTime: string
-    createTime: string
-    versionNo: Number
+    id: Number | undefined
+    code: string | undefined
+    name: string | undefined
+    type: string | undefined
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Post {
-    id: Number
-    title: string
-    coverImg: FileResource
-    imgs: FileResource[]
-    owner: Number
-    markdown: string
-    torrents: Torrent[]
-    type: string
-    labels: Label[]
-    remark: string
-    status: Number
-    updateTime: string
-    createTime: string
-    versionNo: Number
+    id: Number | undefined
+    title: string | undefined
+    coverImg: FileResource | undefined
+    imgs: FileResource[] | undefined
+    owner: Number | undefined
+    markdown: string | undefined
+    torrents: Torrent[] | undefined
+    type: string | undefined
+    labels: Label[] | undefined
+    remark: string | undefined
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class Torrent {
-    infoHash: string
-    title: string  //用户命名的
-    name: string  //torrent中的名称
-    length: Number
-    comment: string    // torrent中的注释
-    files: string
-    creationDate: Number  //秒时间戳
-    createdBy: string
-    pieceLength: Number
-    singleFile: Boolean
+    infoHash: string | undefined
+    title: string | undefined //用户命名的
+    name: string | undefined //torrent中的名称
+    length: Number | undefined
+    comment: string | undefined   // torrent中的注释
+    files: string | undefined
+    creationDate: Number | undefined //秒时间戳
+    createdBy: string | undefined
+    pieceLength: Number | undefined
+    singleFile: Boolean | undefined
     //complete – 目前做种人数
-    complete: number
+    complete: number | undefined
     //incomplete – 目前正在下载人数
-    incomplete: number
+    incomplete: number | undefined
     //downloaded – 曾经下载完成过的人数
-    downloaded: number
-    peer: Peer[]
-    owner: Number
-    post: Post
+    downloaded: number | undefined
+    peer: Peer[] | undefined
+    owner: Number | undefined
+    post: Post | undefined
 
-    status: Number
-    updateTime: string
-    createTime: string
-    versionNo: Number
+    status: Number | undefined
+    updateTime: string | undefined
+    createTime: string | undefined
+    versionNo: Number | undefined
 }
 
 class TokenInfo {
-    tokenName: string
-    tokenValue: string
-    isLogin: boolean
-    loginId: string
-    loginType: string
-    tokenTimeout: string
-    sessionTimeout: string
-    tokenSessionTimeout: string
-    tokenActiveTimeout: string
-    loginDevice: string
-    tag: any
+    tokenName: string | undefined
+    tokenValue: string | undefined
+    isLogin: boolean | undefined
+    loginId: string | undefined
+    loginType: string | undefined
+    tokenTimeout: string | undefined
+    sessionTimeout: string | undefined
+    tokenSessionTimeout: string | undefined
+    tokenActiveTimeout: string | undefined
+    loginDevice: string | undefined
+    tag: any | undefined
 }
 
-export {Permission, Role, Record, Post, Torrent, FileResource, Peer, Label, TokenInfo}
+export { Permission, Role, Record, Post, Torrent, FileResource, Peer, Label, TokenInfo }

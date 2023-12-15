@@ -11,9 +11,14 @@ const routes = [
         component: () => import('../views/home.vue')
     },
     {
+        path: '/rolePermission',
+        component: () => import('../views/rolePermission.vue')
+    },
+    {
         path: '/role',
         component: () => import('../views/role.vue')
-    }, {
+    },
+    {
         path: '/permission',
         component: () => import('../views/permission.vue')
     },
@@ -45,7 +50,7 @@ const routes = [
 
 
 const router = createRouter({
-    history: createWebHistory(),   
+    history: createWebHistory(),
     routes
 })
 

@@ -13,7 +13,7 @@
 </style>
 <script lang="ts" setup>
 import { onMounted, watch, ref, toRefs } from 'vue';
-import { parseImgUrl } from '../common/util';
+import { parseImgUrl } from '@/common/util';
 const props = defineProps(['url'])
 const src = ref()
 const prev = ref<string[]>()

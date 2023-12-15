@@ -42,7 +42,7 @@
                     <el-input v-model="drawerData.rowData.value" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="ttl">
-                    <el-input-number v-model="drawerData.rowData.ttl" :min="600"  :disabled="drawerData.editDisable" />
+                    <el-input-number v-model="drawerData.rowData.ttl" :min="600" :disabled="drawerData.editDisable" />
                 </el-form-item>
                 <el-form-item label="remark">
                     <el-input type="textarea" v-model="drawerData.rowData.remark" :disabled="drawerData.editDisable" />
@@ -63,14 +63,11 @@
 
     </div>
 </template>
-<style scoped>
-
-
-</style>
+<style scoped></style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
 import { ddnsReq } from "@/common/request"
-import {Record} from "@/common/class"
+import { Record } from "../common/class"
 
 const drawerData = ref<{
     rowData: Record,
@@ -81,7 +78,7 @@ const drawerData = ref<{
     show: false,
     editDisable: true
 })
-const tableData = ref<[Record]>([new Record()])
+const tableData = ref<Record[]>([])
 const ips = reactive<{
     ipv4: string,
     ipv6: string
