@@ -1,10 +1,13 @@
 <template>
   <div>
-    <p v-if="coverImg.show" class="imgShow">
-      <vx-image fit="fill" class="coverClass" :src="coverImg.src"></vx-image>
-
-      <el-tag class="coverTag" @close="tagClose" closable>{{ coverImg.name }}</el-tag>
-    </p>
+    <div v-if="coverImg.show" class="imgShow">
+      <vx-image :height="150" :width="243" :src="coverImg.src"></vx-image>
+      <div class="zindex">
+        <el-icon color="white" @click="closeIcon">
+          <Close/>
+        </el-icon>
+      </div>
+    </div>
 
     <div class="input-file-button" v-if="!coverImg.show" @click="divClick">
       <div class="ccc">
@@ -14,36 +17,36 @@
         <div>添加封面图片</div>
       </div>
     </div>
-
     <input type="file" ref="inputs" @change="handleCoverImg" style="display: none;" accept="image/*"
            class="input-select"/>
-
   </div>
 </template>
 <style scoped>
+.zindex {
+  height: 150px;
+  width: 243px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.zindex:hover {
+  font-size: 25px;
+  height: 150px;
+  width: 243px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .imgShow {
   cursor: pointer;
   position: relative;
   height: 150px;
   width: 243px;
 }
-
-.coverTag:hover {
-  position: absolute;
-  left: 49%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 1
-}
-
-.coverTag {
-  position: absolute;
-  left: 49%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.05
-}
-
 
 .input-file-button {
   padding: 9px 8px;
@@ -68,25 +71,23 @@
   color: #606266;
 }
 
-
-.coverClass {
-  width: 243px;
-  height: 150px;
-  border: 1px #dcdfe6 solid;
-}
 </style>
 <script lang="ts" setup>
-import {reactive, ref, onMounted} from 'vue';
+import {onMounted, reactive, ref} from 'vue';
 import {fileToBase64} from '@/common/util';
 import {FileResource} from '@/common/class';
-import {Plus} from '@element-plus/icons-vue'
+import {Close, Plus} from '@element-plus/icons-vue'
 import VxImage from './VxImage.vue';
-
 import {ElNotification} from 'element-plus'
-
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
+const inputs = ref(null)
+const coverImg = reactive<{ show: Boolean, src: string, name: string }>({
+  show: false,
+  src: '',
+  name: ''
+})
 
 onMounted(() => {
   const modelValue: FileResource = props.modelValue
@@ -96,19 +97,13 @@ onMounted(() => {
   }
 });
 
-const coverImg = reactive<{ show: Boolean, src: string, name: string }>({
-  show: false,
-  src: '',
-  name: ''
-})
-
-const inputs = ref(null)
-
 const divClick = () => {
   const ins = inputs.value as any
   ins.click()
 }
-const tagClose = () => {
+const closeIcon = () => {
+  const ins = inputs.value as any
+  ins.value = ''
   coverImg.src = ''
   coverImg.show = false
   coverImg.name = ''
@@ -131,7 +126,6 @@ const handleCoverImg = (element: any) => {
           title: "解析图片失败"
         })
       })
-
 }
 
 

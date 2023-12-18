@@ -11,7 +11,6 @@
     </div>
 
     <div class="card-div">
-
         <el-table :data="tableData?.content" :stripe="true" border :highlight-current-row="true" style="width: 100%"
             table-layout="auto">
             <el-table-column fixed prop="id" label="id" />
@@ -46,9 +45,15 @@
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
+<<<<<<< HEAD
 import { postReq } from "../common/request"
 import { Post } from "../common/class"
 import PostItem from '../components/PostItem.vue'
+=======
+import { postReq } from "@/common/request"
+import { Post } from "@/common/class"
+import PostItem from '@/components/PostItem.vue'
+>>>>>>> main1
 
 const tableData = ref<{
     content: Post[],

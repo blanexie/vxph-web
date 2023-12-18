@@ -32,19 +32,19 @@ const routes = [
     },
     {
         path: '/post',
-        component: () => import('../views/postList.vue')
+        component: () => import('@/views/postList.vue')
     },
     {
         path: '/postEdit',
-        component: () => import('../views/postEdit.vue')
+        component: () => import('@/views/postEdit.vue')
     },
     {
         path: '/postProview',
-        component: () => import('../views/postProview.vue')
+        component: () => import('@/views/postProview.vue')
     },
     {
         path: '/ddns',
-        component: () => import('../views/ddns.vue')
+        component: () => import("@/views/ddns.vue")
     },
 ]
 
