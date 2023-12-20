@@ -14,7 +14,8 @@
   </div>
 
   <div class="card-div">
-    <el-table :data="rolePermission.allowPermission" border style="width: 100%">
+    <h3>权限列表</h3> <br />
+    <el-table :data="rolePermission.page" border style="width: 100%">
       <el-table-column prop="code" label="Code" width="180" />
       <el-table-column prop="name" label="Name" width="180" />
       <el-table-column prop="type" label="type" />
@@ -23,6 +24,9 @@
       <el-table-column prop="createTime" label="CreateTime" />
       <el-table-column prop="updateTime" label="UpdateTime" />
     </el-table>
+    <br />
+    <el-pagination background layout="prev, pager, next" @current-change="pageChange"
+      :total="rolePermission.permissions.length" />
   </div>
 </template>
 <script setup lang="ts">
@@ -35,13 +39,24 @@ const route = useRoute()
 
 const rolePermission = ref<{
   role: Role,
+  pageNo: number,
+  page: Permission[],
   permissions: Permission[],
   allowPermission: Permission[],
 }>({
+  pageNo: 1,
+  page: [],
   role: new Role(),
   permissions: [],
   allowPermission: []
 })
+
+const pageChange = (pageNo: number) => {
+  let start = (pageNo - 1) * 10
+  let end = pageNo * 10
+  let rp = rolePermission.value
+  rp.page = rp.permissions.slice(start, end)
+}
 
 
 onMounted(() => {
@@ -56,8 +71,9 @@ onMounted(() => {
     rp.allowPermission = resp.data as Permission[]
   })
 
-  permissionReq.findAll().then(resp=>{
-    rp.permissions=resp.data
+  permissionReq.findAll().then(resp => {
+    rp.permissions = resp.data
+    rp.page = rp.permissions.slice(0, 10)
   })
 
 })
