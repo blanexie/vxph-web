@@ -5,16 +5,8 @@
 
 </style>
 <script lang="ts" setup>
-<<<<<<< HEAD
-import { onMounted, watch, ref, toRefs } from 'vue';
-import { parseImgUrl } from '@/common/util';
-const props = defineProps(['url'])
-const src = ref()
-const prev = ref<string[]>()
-=======
 import {onMounted, watch, ref, reactive} from 'vue';
 import {parseImgUrl} from '@/common/util';
->>>>>>> main1
 
 const props = defineProps(['url', 'width', 'height'])
 const src = ref()
