@@ -34,7 +34,7 @@ instance.interceptors.request.use(
         const token = localStorage.getItem("tokenInfo")
         if (token) {
             const tokenInfo = JSON.parse(token) as TokenInfo
-            config.headers[tokenInfo.tokenName] = tokenInfo.tokenValue
+            config.headers[tokenInfo.tokenName!] = tokenInfo.tokenValue
         }
         return config;
     }, (error) => {
@@ -132,8 +132,8 @@ const labelReq = {
 const fileResourceReq = {
     upload: async (fileResource: FileResource) => {
         let formData = new FormData();
-        formData.append("hash", fileResource.hash);
-        formData.append("file", fileResource.file);
+        formData.append("hash", fileResource.hash!);
+        formData.append("file", fileResource.file!);
         return instance.post("/api/resource/upload", formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         })

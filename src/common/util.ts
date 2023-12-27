@@ -57,7 +57,7 @@ function modifyHTML(html: string, files: Map<String, FileResource>) {
         }
         let fs = files.get(src)
         if (fs) {
-            element.src = fs.base64
+            element.src = fs.base64!
         }
     }
     return tempDiv.innerHTML

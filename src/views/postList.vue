@@ -6,7 +6,7 @@
     </div>
     <div class="card-div">
         <div v-for="item in tableData?.content">
-            <PostItem :post="item"></PostItem>
+            <PostItem :post="item"></PostItem><br>
         </div>
     </div>
 
@@ -41,7 +41,6 @@
     margin: 10px;
     width: 400px;
 }
-
 </style>
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue'
@@ -70,14 +69,8 @@ const search = () => {
         page: tv.page, pageSize: tv.pageSize, keyword: tv.keyword
     }
     postReq.query(reqData).then(resp => {
-        tv.content = resp.data.postPage.content
-        tv.totalPage = resp.data.postPage.totalPages
-        const torrents = resp.data.torrents
-
-        tv.content.forEach(it => {
-            it.torrents = torrents.filter(t => t.postId == it.id)
-            console.log(it)
-        })
+        tv.content = resp.data.content
+        tv.totalPage = resp.data.totalPages
     })
 }
 onMounted(() => {

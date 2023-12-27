@@ -1,5 +1,5 @@
 <template>
-    <el-image :lazy="true" :style="style" @click="dialogShow" :src="src"/>
+    <el-image :lazy="true" :style="style" @click="dialogShow"  :src="src"/>
 </template>
 <style scoped>
 
@@ -20,6 +20,7 @@ const dialogShow = () => {
   dialogTableVisible.value = !dialogTableVisible.value
 }
 const init = () => {
+  console.log(props)
   const url = props.url as string
   src.value = parseImgUrl(url)
 }

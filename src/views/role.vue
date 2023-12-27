@@ -62,48 +62,6 @@
       </el-form>
     </el-drawer>
 
-    <el-drawer v-model="drawerPermission.show" title="授权" size="700" direction="rtl">
-      <div> 角色 : {{ drawerPermission.role.name }}</div>
-      <br />
-      <div>
-        <el-select class="w-50" v-model="drawerPermission.copyRole" filterable reserve-keyword placeholder="请选择要复制的角色"
-          :loading="drawerPermission.selectloading">
-          <el-option v-for="item in tableData" :key="item.code" :label="item.name" :value="item.code" />
-        </el-select>
-        <el-button type="primary" @click="copyRolePermission(drawerPermission.copyRole, drawerPermission.role)">复制角色权限
-        </el-button>
-      </div>
-      <br />
-      <div>
-        <el-select class="w-50" v-model="drawerPermission.selectPermissionCodes" multiple filterable remote
-          reserve-keyword placeholder="请输入权限关键字" remote-show-suffix :remote-method="searchRemotePermission"
-          :loading="drawerPermission.selectloading">
-          <el-option v-for="item in drawerPermission.searchPermissions" :key="item.code" :label="item.name"
-            :value="item.code" />
-        </el-select>
-
-        <el-button type="primary"
-          @click="addRolePermission(drawerPermission.role, drawerPermission.selectPermissionCodes)">添加权限
-        </el-button>
-      </div>
-      <br>
-      <div>包含的权限：</div>
-      <br>
-      <el-table :data="drawerPermission.role.permissions" border :stripe="true" :highlight-current-row="true"
-        style="width: 100%" table-layout="auto">
-        <el-table-column fixed prop="name" label="name" />
-        <el-table-column prop="code" label="code" />
-        <el-table-column prop="type" label="type" />
-        <el-table-column fixed="right" label="Operations" width="120">
-          <template #default="scope">
-            <el-button link type="primary" size="small"
-              @click.prevent="removeRolePermission(drawerPermission.role, scope.row)">
-              Remove
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-drawer>
   </div>
 </template>
 <style scoped>
@@ -195,47 +153,6 @@ const addRoleDrawer = (role: Role) => {
   })
 }
 
-
-const copyRolePermission = (from: String, to: Role) => {
-  const ff = tableData.value.filter(it => it.code == from)
-  if (ff.length == 0) {
-    return
-  }
-  const ps = [...to.permissions, ...ff[0].permissions]
-  to.permissions = duplicate(ps, (it: any) => it.code)
-  saveRole(to, () => {
-  })
-}
-
-
-const addRolePermission = (role: Role, selectPermissionCodes: String[]) => {
-  //校验传入的参数是否空
-  if (selectPermissionCodes.length === 0) {
-    return
-  }
-  let dp = drawerPermission.value
-
-  let set = new Set([...selectPermissionCodes])
-  console.log(dp.searchPermissions)
-  let selects = dp.searchPermissions.filter(it => {
-    console.log("it", it.code, set.has(it.code))
-    return set.has(it.code)
-  })
-  console.log(selects)
-  role.permissions = duplicate([...selects, ...role.permissions], (it: any) => it.code)
-  saveRole(role, () => {
-    dp.selectPermissionCodes = []
-  })
-}
-
-const removeRolePermission = (role: Role, permission: Permission) => {
-  console.log("permission", permission)
-  role.permissions = role.permissions.filter(it => it.code !== permission.code)
-  saveRole(role, () => {
-  })
-}
-
-
 const saveRole = (role: Role, func: Function) => {
   const dp = drawerPermission.value
   roleReq.save(role).then(resp => {
@@ -248,20 +165,6 @@ const saveRole = (role: Role, func: Function) => {
       console.log("修改结束11", resp)
     }
   })
-}
-
-
-const searchRemotePermission = (query: string) => {
-  if (query == "") {
-    return
-  }
-  const dp = drawerPermission.value
-  permissionReq.list({ page: 1, pageSize: 10, searchKey: query })
-    .then(resp => {
-      dp.searchPermissions = resp.data.content
-      console.log("searchRemotePermission", dp.searchPermissions)
-      dp.selectloading = false
-    })
 }
 
 const updatePermission = (row: any) => {
